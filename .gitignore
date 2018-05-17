@@ -1,0 +1,6 @@
+.DS_Store
+.idea
+composer.lock
+grumphp.yml
+vendor
+phpunit.xml
