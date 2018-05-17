@@ -37,15 +37,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public function activate(Composer $composer, IOInterface $io)
     {
         $this->io = $io;
-
         $extra = $composer->getPackage()->getExtra() + ['artifacts' => []];
 
-        // Make sure that package name are in lowercase.
+        // Make sure that package names are in lowercase.
         $this->config = array_combine(
             array_map(
-                function ($name) {
-                    return strtolower($name);
-                },
+                'strtolower',
                 array_keys($extra['artifacts'])
             ),
             $extra['artifacts']
@@ -75,7 +72,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $package = $event->getOperation()->getPackage();
 
         if (array_key_exists($package->getName(), $this->config)) {
-            self::setArtifactDist($package);
+            $this->setArtifactDist($package);
         }
     }
 
@@ -89,6 +86,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         /** @var Package $package */
         $package = $event->getOperation()->getInitialPackage();
+
         if (array_key_exists($package->getName(), $this->config)) {
             $this->setArtifactDist($package);
         }
@@ -103,7 +101,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private function setArtifactDist(Package $package)
     {
         $this->io->writeError(
-            "  - Installing artifact of <info>".$package->getName()."</info> instead of regular package."
+            sprintf(
+                '  - Installing artifact of <info>%s</info> instead of regular package.',
+                $package->getName()
+            )
         );
         $tokens = $this->getPackageTokens($package);
 
@@ -124,19 +125,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     private function getPackageTokens(Package $package)
     {
-        $tokens = [
-          'version' => $package->getVersion(),
-          'name' => $package->getName(),
-          'stability' => $package->getStability(),
-          'type' => $package->getType(),
-          'checksum' => $package->getDistSha1Checksum(),
+        return [
+          '{version}' => $package->getVersion(),
+          '{name}' => $package->getName(),
+          '{stability}' => $package->getStability(),
+          '{type}' => $package->getType(),
+          '{checksum}' => $package->getDistSha1Checksum(),
         ];
-
-        foreach ($tokens as $name => $value) {
-            unset($tokens[$name]);
-            $mappings['{'.$name.'}'] = $value;
-        }
-
-        return $tokens;
     }
 }
