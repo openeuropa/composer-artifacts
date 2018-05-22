@@ -1,0 +1,15 @@
+{
+  "name": "openeuropa/main",
+  "require": {
+    "openeuropa/dependency-1": "*"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../*",
+      "options": {
+        "symlink": false
+      }
+    }
+  ]
+}

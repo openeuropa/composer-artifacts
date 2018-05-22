@@ -77,7 +77,7 @@
       artifacts:
        "test/test":
          dist:
-           url: "{name}-{version}-{unexistent}-{tokens}.tar.gz"
+           url: "{name}-{version}-{non-existent}-{tokens}.tar.gz"
            type: tar
   output:
-    getDistUrl: "test/test-1.0.0-{unexistent}-{tokens}.tar.gz"
+    getDistUrl: "test/test-1.0.0-{non-existent}-{tokens}.tar.gz"

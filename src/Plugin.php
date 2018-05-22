@@ -3,6 +3,7 @@
 namespace OpenEuropa\ComposerArtifacts;
 
 use Composer\Composer;
+use Composer\Config;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
