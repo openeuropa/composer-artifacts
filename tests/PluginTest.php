@@ -3,33 +3,34 @@
 namespace OpenEuropa\ComposerArtifacts\Tests;
 
 use Composer\Composer;
+use Composer\DependencyResolver\DefaultPolicy;
+use Composer\DependencyResolver\Operation\InstallOperation;
+use Composer\DependencyResolver\Operation\UpdateOperation;
+use Composer\DependencyResolver\Pool;
+use Composer\DependencyResolver\Request;
+use Composer\Installer\PackageEvents;
 use Composer\IO\NullIO;
 use Composer\Package\RootPackage;
+use Composer\Installer\PackageEvent;
+use Composer\Repository\CompositeRepository;
 use OpenEuropa\ComposerArtifacts\Plugin;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Class PluginTest
  */
 class PluginTest extends TestCase
 {
-
     /**
-     * Test artifact.
+     * Test Activate.
+     *
+     * @dataProvider packageProvider
      */
-    public function testSetArtifactDist()
+    public function testActivate($input, $output)
     {
-        $package = new RootPackage('test/test', '1.0.0', '1.0.0');
-        $package->setExtra([
-            'artifacts' => [
-                'test/test' => [
-                    'dist' => [
-                        'url' => '{version}.tar.gz',
-                        'type' => 'tar',
-                    ]
-                ]
-            ]
-        ]);
+        $package = new RootPackage($input['name'], $input['version'], $input['prettyVersion']);
+        $package->setExtra($input['extra']);
         $io = new NullIO();
         $composer = new Composer();
         $composer->setPackage($package);
@@ -37,26 +38,108 @@ class PluginTest extends TestCase
         $plugin = new Plugin();
         $plugin->activate($composer, $io);
 
-        $this->invokeMethod($plugin, 'setArtifactDist', [$package]);
-        $this->assertEquals('1.0.0.tar.gz', $package->getDistUrl());
+        $config_keys = array_keys($plugin->getConfig());
+
+        $this->assertEquals(array_map('strtolower', $config_keys), $config_keys);
     }
 
     /**
-     * Call protected/private method of a class.
-     *
-     * @param $object
-     * @param $methodName
-     * @param array      $parameters
-     *
-     * @return mixed
-     * @throws \ReflectionException
+     * Test registered events.
      */
-    public function invokeMethod(&$object, $methodName, array $parameters = array())
+    public function testRegisteredEvents()
     {
-        $reflection = new \ReflectionClass(get_class($object));
-        $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
+        $events = [
+            PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
+            PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
+        ];
 
-        return $method->invokeArgs($object, $parameters);
+        $this->assertEquals(Plugin::getSubscribedEvents(), $events);
+    }
+
+    /**
+     * @param $input
+     * @param $output
+     *
+     * @return object[]
+     */
+    private function eventPopulate($operationName, $input, $output)
+    {
+        $package = new RootPackage($input['name'], $input['version'], $input['prettyVersion']);
+        $package->setExtra($input['extra']);
+        $io = new NullIO();
+        $composer = new Composer();
+        $composer->setPackage($package);
+
+        $plugin = new Plugin();
+        $plugin->activate($composer, $io);
+
+        $operation = 'install' === $operationName ?
+            new InstallOperation($package) :
+            new UpdateOperation($package, $package);
+
+        return [
+            'event' => new PackageEvent(
+                'test',
+                $composer,
+                $io,
+                false,
+                new DefaultPolicy(),
+                new Pool(),
+                new CompositeRepository([]),
+                new Request(),
+                [],
+                $operation
+            ),
+            'plugin' => $plugin,
+            'package' => $package,
+        ];
+    }
+
+    /**
+     * Test prePackageInstall.
+     *
+     * @dataProvider packageProvider
+     */
+    public function testPrePackageInstall($input, $output)
+    {
+        /** @var $event \Composer\Installer\PackageEvent */
+        /** @var $plugin Plugin */
+        /** @var $package \Composer\Package\Package */
+        list($event, $plugin, $package) = array_values(
+            $this->eventPopulate('install', $input, $output)
+        );
+
+        $plugin->prePackageInstall($event);
+
+        $this->assertEquals($output['getDistUrl'], $package->getDistUrl());
+    }
+
+    /**
+     * Test prePackageUpdate.
+     *
+     * @dataProvider packageProvider
+     */
+    public function testPrePackageUpdate($input, $output)
+    {
+        /** @var $event \Composer\Installer\PackageEvent */
+        /** @var $plugin Plugin */
+        /** @var $package \Composer\Package\Package */
+        list($event, $plugin, $package) = array_values(
+            $this->eventPopulate('update', $input, $output)
+        );
+
+        $plugin->prePackageUpdate($event);
+
+        $this->assertEquals($output['getDistUrl'], $package->getDistUrl());
+    }
+
+    /**
+     * PHPUnit provider.
+     *
+     * @return mixed[]
+     */
+    public function packageProvider()
+    {
+        return Yaml::parseFile(__DIR__.'/fixtures/packageProvider.yml');
     }
 }

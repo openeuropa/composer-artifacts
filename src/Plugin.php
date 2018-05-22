@@ -32,6 +32,16 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private $io;
 
     /**
+     * Get the configuration.
+     *
+     * @return mixed[]
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function activate(Composer $composer, IOInterface $io)
@@ -71,7 +81,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         /** @var Package $package */
         $package = $event->getOperation()->getPackage();
 
-        if (array_key_exists($package->getName(), $this->config)) {
+        if (array_key_exists($package->getName(), $this->getConfig())) {
             $this->setArtifactDist($package);
         }
     }
@@ -87,7 +97,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         /** @var Package $package */
         $package = $event->getOperation()->getInitialPackage();
 
-        if (array_key_exists($package->getName(), $this->config)) {
+        if (array_key_exists($package->getName(), $this->getConfig())) {
             $this->setArtifactDist($package);
         }
     }
@@ -107,9 +117,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             )
         );
         $tokens = $this->getPackageTokens($package);
+        $config = $this->getConfig();
 
-        $distUrl = strtr($this->config[$package->getName()]['dist']['url'], $tokens);
-        $distType = strtr($this->config[$package->getName()]['dist']['type'], $tokens);
+        $distUrl = strtr($config[$package->getName()]['dist']['url'], $tokens);
+        $distType = strtr($config[$package->getName()]['dist']['type'], $tokens);
 
         $package->setDistUrl($distUrl);
         $package->setDistType($distType);
