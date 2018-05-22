@@ -6,3 +6,6 @@ parameters:
   tasks.phpcs.triggered_by:
     - php
     - inc
+  tasks.phpmd.exclude:
+    - vendor/
+    - tests/
