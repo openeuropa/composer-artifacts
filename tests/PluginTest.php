@@ -8,7 +8,6 @@ use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\DependencyResolver\Operation\UpdateOperation;
 use Composer\DependencyResolver\Pool;
 use Composer\DependencyResolver\Request;
-use Composer\Installer\PackageEvents;
 use Composer\IO\NullIO;
 use Composer\Package\RootPackage;
 use Composer\Installer\PackageEvent;
@@ -41,19 +40,6 @@ class PluginTest extends TestCase
         $config_keys = array_keys($plugin->getConfig());
 
         $this->assertEquals(array_map('strtolower', $config_keys), $config_keys);
-    }
-
-    /**
-     * Test registered events.
-     */
-    public function testRegisteredEvents()
-    {
-        $events = [
-            PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
-            PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
-        ];
-
-        $this->assertEquals(Plugin::getSubscribedEvents(), $events);
     }
 
     /**
