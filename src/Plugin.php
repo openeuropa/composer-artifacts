@@ -33,13 +33,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private $io;
 
     /**
-     * The plugin tokens.
-     *
-     * @var string[]
-     */
-    protected $tokens = [];
-
-    /**
      * Get the configuration.
      *
      * @return mixed[]
@@ -90,7 +83,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $package = $event->getOperation()->getPackage();
 
         if (array_key_exists($package->getName(), $this->getConfig())) {
-            $this->setPluginTokens($package);
             $this->setArtifactDist($package);
         }
     }
@@ -107,37 +99,27 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $package = $event->getOperation()->getInitialPackage();
 
         if (array_key_exists($package->getName(), $this->getConfig())) {
-            $this->setPluginTokens($package);
             $this->setArtifactDist($package);
         }
-    }
-
-    /**
-     * Get plugin tokens.
-     *
-     * @return string[]
-     *   The list of tokens and their associated values.
-     */
-    private function getPluginTokens()
-    {
-        return $this->tokens;
     }
 
     /**
      * Set the plugin tokens from the package.
      *
      * @param \Composer\Package\Package $package
+     *
+     * @return array
      */
-    private function setPluginTokens(Package $package)
+    protected function getPluginTokens(Package $package)
     {
-        $this->tokens = array_merge($this->tokens, [
+        return [
             '{pretty-version}' => $package->getPrettyVersion(),
             '{version}' => $package->getVersion(),
             '{name}' => $package->getName(),
             '{stability}' => $package->getStability(),
             '{type}' => $package->getType(),
             '{checksum}' => $package->getDistSha1Checksum(),
-        ]);
+        ];
     }
 
     /**
@@ -146,9 +128,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      * @param \Composer\Package\Package $package
      *   The package.
      */
-    private function setArtifactDist(Package $package)
+    protected function setArtifactDist(Package $package)
     {
-        $tokens = $this->getPluginTokens();
+        $tokens = $this->getPluginTokens($package);
         $config = $this->getConfig();
 
         $distUrl = strtr($config[$package->getName()]['dist']['url'], $tokens);

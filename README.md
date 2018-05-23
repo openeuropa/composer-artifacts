@@ -2,8 +2,8 @@
 
 [![Build Status](https://drone.fpfis.eu/api/badges/openeuropa/composer-artifacts/status.svg?branch=master)](https://drone.fpfis.eu/openeuropa/composer-artifacts)
 
-Composer plugin that allows to download a specified artifact instead of the default package `dist` while downloading
-all the required project dependencies. 
+Composer plugin that allows to download a specified artifact instead of the default `dist` URL, this allows
+to download all artifact dependencies too. 
 
 ## Usage
 
@@ -30,8 +30,8 @@ In your `extra` section add the following:
 
 Available tokens are:
 
-* version
-* name
-* stability
-* type
-* checksum
+* `version`
+* `name`
+* `stability`
+* `type`
+* `checksum`

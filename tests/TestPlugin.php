@@ -2,6 +2,8 @@
 
 namespace OpenEuropa\ComposerArtifacts\Tests;
 
+use Composer\Composer;
+use Composer\Package\Package;
 use OpenEuropa\ComposerArtifacts\Plugin;
 
 /**
@@ -10,10 +12,33 @@ use OpenEuropa\ComposerArtifacts\Plugin;
 class TestPlugin extends Plugin
 {
     /**
-     * @param array $tokens
+     * Composer instance.
+     *
+     * @var \Composer\Composer
      */
-    public function setPluginTokensAsArray(array $tokens)
+    private $composer;
+
+    /**
+     * TestPlugin constructor.
+     *
+     * @param Composer $composer
+     */
+    public function __construct(Composer $composer)
     {
-        $this->tokens = array_merge((array) $this->tokens, $tokens);
+        $this->composer = $composer;
+    }
+
+    /**
+     * @param \Composer\Package\Package $package
+     *
+     * @return array
+     */
+    protected function getPluginTokens(Package $package)
+    {
+        $configSource = $this->composer->getConfig()->getConfigSource()->getName();
+
+        return parent::getPluginTokens($package) + [
+          '{working-dir}' => dirname($configSource),
+        ];
     }
 }

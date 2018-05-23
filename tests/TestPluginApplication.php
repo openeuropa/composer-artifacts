@@ -13,11 +13,6 @@ use Symfony\Component\Console\Output\BufferedOutput;
 class TestPluginApplication extends Application
 {
     /**
-     * @var \Composer\Plugin\PluginInterface
-     */
-    private $testPlugin;
-
-    /**
      * @var \Symfony\Component\Console\Output\BufferedOutput
      */
     private $output;
@@ -35,7 +30,6 @@ class TestPluginApplication extends Application
         parent::__construct();
         $this->setAutoExit(false);
         $this->setCatchExceptions(false);
-        $this->testPlugin = new TestPlugin();
         $this->output = new BufferedOutput();
         $this->io = new NullIO();
     }
@@ -46,12 +40,7 @@ class TestPluginApplication extends Application
     public function getComposer($required = true, $disablePlugins = null)
     {
         $composer = parent::getComposer($required, $disablePlugins);
-        $this->testPlugin->setPluginTokensAsArray([
-            '{working-dir}' => dirname(
-                $composer->getConfig()->getConfigSource()->getName()
-            ),
-        ]);
-        $composer->getPluginManager()->addPlugin($this->testPlugin);
+        $composer->getPluginManager()->addPlugin(new TestPlugin($composer));
 
         return $composer;
     }
