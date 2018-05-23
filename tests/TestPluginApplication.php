@@ -3,16 +3,15 @@
 namespace OpenEuropa\ComposerArtifacts\Tests;
 
 use Composer\Console\Application;
-use Composer\Plugin\PluginInterface;
-use OpenEuropa\ComposerArtifacts\Plugin;
+use Composer\IO\NullIO;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * Wraps Console application allowing to set the test plugin at runtime.
  */
-class TestPluginApplication extends Application {
-
+class TestPluginApplication extends Application
+{
     /**
      * @var \Composer\Plugin\PluginInterface
      */
@@ -31,34 +30,45 @@ class TestPluginApplication extends Application {
     /**
      * TestPluginApplication constructor.
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
-        $this->setAutoExit(FALSE);
-        $this->setCatchExceptions(FALSE);
-        $this->testPlugin = new Plugin();
+        $this->setAutoExit(false);
+        $this->setCatchExceptions(false);
+        $this->testPlugin = new TestPlugin();
         $this->output = new BufferedOutput();
+        $this->io = new NullIO();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getComposer($required = TRUE, $disablePlugins = NULL) {
+    public function getComposer($required = true, $disablePlugins = null)
+    {
         $composer = parent::getComposer($required, $disablePlugins);
+        $this->testPlugin->setPluginTokensAsArray([
+            '{working-dir}' => dirname(
+                $composer->getConfig()->getConfigSource()->getName()
+            )
+        ]);
         $composer->getPluginManager()->addPlugin($this->testPlugin);
+
         return $composer;
     }
 
     /**
      * @return \Symfony\Component\Console\Output\BufferedOutput
      */
-    public function getOutput(): BufferedOutput {
+    public function getOutput()
+    {
         return $this->output;
     }
 
     /**
      * @param string $workingDir
      */
-    public function setWorkingDir(string $workingDir) {
+    public function setWorkingDir($workingDir)
+    {
         $this->workingDir = $workingDir;
     }
 
@@ -68,8 +78,10 @@ class TestPluginApplication extends Application {
      * @return int
      * @throws \Exception
      */
-    public function runCommand(string $input): int {
+    public function runCommand($input)
+    {
         $input = new StringInput($input.' --working-dir='.$this->workingDir);
+
         return $this->run($input, $this->output);
     }
 }

@@ -21,10 +21,16 @@ use Symfony\Component\Yaml\Yaml;
  */
 class PluginTest extends TestCase
 {
+
     /**
      * Test Activate.
      *
      * @dataProvider packageProvider
+     *
+     * @param array $input
+     *   The input data.
+     * @param array $output
+     *   The output data.
      */
     public function testActivate($input, $output)
     {
@@ -37,14 +43,75 @@ class PluginTest extends TestCase
         $plugin = new Plugin();
         $plugin->activate($composer, $io);
 
-        $config_keys = array_keys($plugin->getConfig());
+        $configKeys = array_keys($plugin->getConfig());
 
-        $this->assertEquals(array_map('strtolower', $config_keys), $config_keys);
+        $this->assertEquals(array_map('strtolower', $configKeys), $configKeys);
     }
 
     /**
-     * @param $input
-     * @param $output
+     * Test prePackageInstall.
+     *
+     * @dataProvider packageProvider
+     *
+     * @param array $input
+     *   The input data.
+     * @param array $output
+     *   The output data.
+     */
+    public function testPrePackageInstall($input, $output)
+    {
+        /** @var $event \Composer\Installer\PackageEvent */
+        /** @var $plugin Plugin */
+        /** @var $package \Composer\Package\Package */
+        list($event, $plugin, $package) = array_values(
+            $this->eventPopulate('install', $input, $output)
+        );
+
+        $plugin->prePackageInstall($event);
+
+        $this->assertEquals($output['getDistUrl'], $package->getDistUrl());
+    }
+
+    /**
+     * Test prePackageUpdate.
+     *
+     * @dataProvider packageProvider
+     *
+     * @param array $input
+     *   The input data.
+     * @param array $output
+     *   The output data.
+     */
+    public function testPrePackageUpdate($input, $output)
+    {
+        /** @var $event \Composer\Installer\PackageEvent */
+        /** @var $plugin Plugin */
+        /** @var $package \Composer\Package\Package */
+        list($event, $plugin, $package) = array_values(
+            $this->eventPopulate('update', $input, $output)
+        );
+
+        $plugin->prePackageUpdate($event);
+
+        $this->assertEquals($output['getDistUrl'], $package->getDistUrl());
+    }
+
+    /**
+     * PHPUnit provider.
+     *
+     * @return mixed[]
+     */
+    public function packageProvider()
+    {
+        return Yaml::parseFile(__DIR__.'/fixtures/packageProvider.yml');
+    }
+
+    /**
+     * @param $operationName
+     * @param array $input
+     *   The input data.
+     * @param array $output
+     *   The output data.
      *
      * @return object[]
      */
@@ -79,53 +146,5 @@ class PluginTest extends TestCase
             'plugin' => $plugin,
             'package' => $package,
         ];
-    }
-
-    /**
-     * Test prePackageInstall.
-     *
-     * @dataProvider packageProvider
-     */
-    public function testPrePackageInstall($input, $output)
-    {
-        /** @var $event \Composer\Installer\PackageEvent */
-        /** @var $plugin Plugin */
-        /** @var $package \Composer\Package\Package */
-        list($event, $plugin, $package) = array_values(
-            $this->eventPopulate('install', $input, $output)
-        );
-
-        $plugin->prePackageInstall($event);
-
-        $this->assertEquals($output['getDistUrl'], $package->getDistUrl());
-    }
-
-    /**
-     * Test prePackageUpdate.
-     *
-     * @dataProvider packageProvider
-     */
-    public function testPrePackageUpdate($input, $output)
-    {
-        /** @var $event \Composer\Installer\PackageEvent */
-        /** @var $plugin Plugin */
-        /** @var $package \Composer\Package\Package */
-        list($event, $plugin, $package) = array_values(
-            $this->eventPopulate('update', $input, $output)
-        );
-
-        $plugin->prePackageUpdate($event);
-
-        $this->assertEquals($output['getDistUrl'], $package->getDistUrl());
-    }
-
-    /**
-     * PHPUnit provider.
-     *
-     * @return mixed[]
-     */
-    public function packageProvider()
-    {
-        return Yaml::parseFile(__DIR__.'/fixtures/packageProvider.yml');
     }
 }

@@ -3,20 +3,18 @@
 namespace OpenEuropa\ComposerArtifacts\Tests;
 
 use Composer\Util\Filesystem;
-use OpenEuropa\ComposerArtifacts\Plugin;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
 
 /**
  * Integration tests.
  */
-class PluginIntegrationTest extends TestCase {
-
+class PluginIntegrationTest extends TestCase
+{
     /**
      * {@inheritdoc}
      */
-    protected function setUp() {
+    protected function setUp()
+    {
         $fs = new Filesystem();
         $fs->remove($this->path('/main/composer.lock'));
         $fs->removeDirectory($this->path('/main/vendor'));
@@ -25,7 +23,8 @@ class PluginIntegrationTest extends TestCase {
     /**
      * Test install command.
      */
-    public function testInstall() {
+    public function testInstall()
+    {
         $application = new TestPluginApplication();
         $application->setWorkingDir($this->path('/main'));
         $application->runCommand('install');
@@ -38,7 +37,8 @@ class PluginIntegrationTest extends TestCase {
     /**
      * Test install command with prefer source.
      */
-    public function testInstallPreferSource() {
+    public function testInstallPreferSource()
+    {
         $application = new TestPluginApplication();
         $application->setWorkingDir($this->path('/main'));
         $application->runCommand('install --prefer-source');
@@ -51,7 +51,8 @@ class PluginIntegrationTest extends TestCase {
     /**
      * Test install command with plugins disabled.
      */
-    public function testInstallWithoutPlugins() {
+    public function testInstallWithoutPlugins()
+    {
         $application = new TestPluginApplication();
         $application->setWorkingDir($this->path('/main'));
         $application->runCommand('install --no-plugins');
@@ -66,7 +67,8 @@ class PluginIntegrationTest extends TestCase {
      *
      * @return string
      */
-    private function path(string $path): string {
+    private function path($path)
+    {
         return __DIR__.'/fixtures'.$path;
     }
 }

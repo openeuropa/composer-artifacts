@@ -35,9 +35,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Current working directory.
      *
-     * @var string
+     * @var string[]
      */
-    private $workingDir;
+    protected $tokens = [];
 
     /**
      * Get the configuration.
@@ -65,10 +65,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             ),
             $extra['artifacts']
         );
-
-        // Set working directory so that we can provide it as a token.
-        $path = $composer->getConfig()->getConfigSource()->getName();
-        $this->workingDir = dirname($path);
     }
 
     /**
@@ -94,6 +90,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $package = $event->getOperation()->getPackage();
 
         if (array_key_exists($package->getName(), $this->getConfig())) {
+            $this->setPluginTokens($package);
             $this->setArtifactDist($package);
         }
     }
@@ -110,8 +107,37 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $package = $event->getOperation()->getInitialPackage();
 
         if (array_key_exists($package->getName(), $this->getConfig())) {
+            $this->setPluginTokens($package);
             $this->setArtifactDist($package);
         }
+    }
+
+    /**
+     * Get plugin tokens.
+     *
+     * @return string[]
+     *   The list of tokens and their associated values.
+     */
+    private function getPluginTokens()
+    {
+        return $this->tokens;
+    }
+
+    /**
+     * Set the plugin tokens from the package.
+     *
+     * @param \Composer\Package\Package $package
+     */
+    private function setPluginTokens(Package $package)
+    {
+        $this->tokens = array_merge($this->tokens, [
+            '{pretty-version}' => $package->getPrettyVersion(),
+            '{version}' => $package->getVersion(),
+            '{name}' => $package->getName(),
+            '{stability}' => $package->getStability(),
+            '{type}' => $package->getType(),
+            '{checksum}' => $package->getDistSha1Checksum(),
+        ]);
     }
 
     /**
@@ -122,7 +148,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     private function setArtifactDist(Package $package)
     {
-        $tokens = $this->getPackageTokens($package);
+        $tokens = $this->getPluginTokens();
         $config = $this->getConfig();
 
         $distUrl = strtr($config[$package->getName()]['dist']['url'], $tokens);
@@ -136,26 +162,5 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $package->getName(),
             $package->getDistUrl()
         ));
-    }
-
-    /**
-     * Get tokens from a package.
-     *
-     * @param \Composer\Package\Package $package
-     *
-     * @return string[]
-     *   The list of tokens and their associated values.
-     */
-    private function getPackageTokens(Package $package)
-    {
-        return [
-            '{pretty-version}' => $package->getPrettyVersion(),
-            '{version}' => $package->getVersion(),
-            '{name}' => $package->getName(),
-            '{stability}' => $package->getStability(),
-            '{type}' => $package->getType(),
-            '{checksum}' => $package->getDistSha1Checksum(),
-            '{working-dir}' => $this->workingDir,
-        ];
     }
 }
