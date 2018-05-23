@@ -33,6 +33,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private $io;
 
     /**
+     * Current working directory.
+     *
+     * @var string
+     */
+    private $workingDir;
+
+    /**
      * Get the configuration.
      *
      * @return mixed[]
@@ -58,6 +65,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             ),
             $extra['artifacts']
         );
+
+        // Set working directory so that we can provide it as a token.
+        $path = $composer->getConfig()->getConfigSource()->getName();
+        $this->workingDir = dirname($path);
     }
 
     /**
@@ -66,8 +77,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-          PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
-          PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
+            PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
+            PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
         ];
     }
 
@@ -111,12 +122,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     private function setArtifactDist(Package $package)
     {
-        $this->io->writeError(
-            sprintf(
-                '  - Installing artifact of <info>%s</info> instead of regular package.',
-                $package->getName()
-            )
-        );
         $tokens = $this->getPackageTokens($package);
         $config = $this->getConfig();
 
@@ -125,6 +130,12 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         $package->setDistUrl($distUrl);
         $package->setDistType($distType);
+
+        $this->io->writeError(sprintf(
+            'Installing <info>%s</info> artifact from <info>%s</info>.',
+            $package->getName(),
+            $package->getDistUrl()
+        ));
     }
 
     /**
@@ -138,11 +149,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private function getPackageTokens(Package $package)
     {
         return [
-          '{version}' => $package->getVersion(),
-          '{name}' => $package->getName(),
-          '{stability}' => $package->getStability(),
-          '{type}' => $package->getType(),
-          '{checksum}' => $package->getDistSha1Checksum(),
+            '{pretty-version}' => $package->getPrettyVersion(),
+            '{version}' => $package->getVersion(),
+            '{name}' => $package->getName(),
+            '{stability}' => $package->getStability(),
+            '{type}' => $package->getType(),
+            '{checksum}' => $package->getDistSha1Checksum(),
+            '{working-dir}' => $this->workingDir,
         ];
     }
 }

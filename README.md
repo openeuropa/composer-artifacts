@@ -21,7 +21,7 @@ In your `extra` section add the following:
                 "type": "tar"
               }
             }
-        },
+        }
     }
 }
 ```

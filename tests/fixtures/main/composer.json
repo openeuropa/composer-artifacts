@@ -1,15 +1,22 @@
 {
   "name": "openeuropa/main",
   "require": {
-    "openeuropa/dependency-1": "*"
+    "openeuropa/dependency-1": "1.0.0"
   },
   "repositories": [
     {
       "type": "path",
-      "url": "../*",
-      "options": {
-        "symlink": false
+      "url": "../*"
+    }
+  ],
+  "extra": {
+    "artifacts": {
+      "openeuropa/dependency-1": {
+        "dist": {
+          "url": "file://{working-dir}/../artifacts/dependency-1-{pretty-version}.tar.gz",
+          "type": "tar"
+        }
       }
     }
-  ]
+  }
 }
