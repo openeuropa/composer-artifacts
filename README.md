@@ -1,5 +1,7 @@
 # Composer Artifacts
 
+[![Build Status](https://drone.fpfis.eu/api/badges/openeuropa/composer-artifacts/status.svg?branch=master)](https://drone.fpfis.eu/openeuropa/composer-artifacts)
+
 Composer plugin that allows to download a specified artifact instead of the default package `dist` while downloading
 all the required project dependencies. 
 
