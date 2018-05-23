@@ -49,7 +49,7 @@ class TestPluginApplication extends Application
         $this->testPlugin->setPluginTokensAsArray([
             '{working-dir}' => dirname(
                 $composer->getConfig()->getConfigSource()->getName()
-            )
+            ),
         ]);
         $composer->getPluginManager()->addPlugin($this->testPlugin);
 

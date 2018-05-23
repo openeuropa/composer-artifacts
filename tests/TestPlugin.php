@@ -4,6 +4,9 @@ namespace OpenEuropa\ComposerArtifacts\Tests;
 
 use OpenEuropa\ComposerArtifacts\Plugin;
 
+/**
+ * Class TestPlugin
+ */
 class TestPlugin extends Plugin
 {
     /**
@@ -12,13 +15,5 @@ class TestPlugin extends Plugin
     public function setPluginTokensAsArray(array $tokens)
     {
         $this->tokens = array_merge((array) $this->tokens, $tokens);
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getPluginTokens()
-    {
-        return $this->tokens;
     }
 }

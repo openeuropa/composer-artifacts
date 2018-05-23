@@ -33,7 +33,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private $io;
 
     /**
-     * Current working directory.
+     * The plugin tokens.
      *
      * @var string[]
      */
