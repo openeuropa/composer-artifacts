@@ -49,15 +49,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $this->io = $io;
         $extra = $composer->getPackage()->getExtra() + ['artifacts' => []];
-
-        // Make sure that package names are in lowercase.
-        $this->config = array_combine(
-            array_map(
-                'strtolower',
-                array_keys($extra['artifacts'])
-            ),
-            $extra['artifacts']
-        );
+        $this->config = $this->ensureLowerCase($extra['artifacts']);
     }
 
     /**
@@ -144,5 +136,23 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             $package->getName(),
             $package->getDistUrl()
         ));
+    }
+
+    /**
+     * Make sure that package names are in lowercase.
+     *
+     * @param array $array
+     *
+     * @return array
+     */
+    protected function ensureLowerCase(array $array)
+    {
+        return array_combine(
+            array_map(
+                'strtolower',
+                array_keys($array)
+            ),
+            $array
+        );
     }
 }
