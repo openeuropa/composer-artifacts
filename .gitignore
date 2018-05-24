@@ -4,3 +4,4 @@ composer.lock
 grumphp.yml
 vendor
 phpunit.xml
+tests/fixtures/main/composer.json

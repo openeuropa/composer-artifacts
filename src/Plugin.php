@@ -102,7 +102,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      *
      * @return array
      */
-    protected function getPluginTokens(Package $package)
+    private function getPluginTokens(Package $package)
     {
         return [
             '{pretty-version}' => $package->getPrettyVersion(),
@@ -120,7 +120,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      * @param \Composer\Package\Package $package
      *   The package.
      */
-    protected function setArtifactDist(Package $package)
+    private function setArtifactDist(Package $package)
     {
         $tokens = $this->getPluginTokens($package);
         $config = $this->getConfig();
@@ -145,7 +145,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      *
      * @return array
      */
-    protected function ensureLowerCase(array $array)
+    private function ensureLowerCase(array $array)
     {
         return array_combine(
             array_map(

@@ -4,6 +4,7 @@ namespace OpenEuropa\ComposerArtifacts\Tests;
 
 use Composer\Console\Application;
 use Composer\IO\NullIO;
+use OpenEuropa\ComposerArtifacts\Plugin;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -40,7 +41,7 @@ class TestPluginApplication extends Application
     public function getComposer($required = true, $disablePlugins = null)
     {
         $composer = parent::getComposer($required, $disablePlugins);
-        $composer->getPluginManager()->addPlugin(new TestPlugin($composer));
+        $composer->getPluginManager()->addPlugin(new Plugin());
 
         return $composer;
     }
