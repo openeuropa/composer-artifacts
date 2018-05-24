@@ -22,28 +22,6 @@
       - /vendor/openeuropa/dependency-1/artifact.txt
 -
   input:
-    file: 'composer3.json'
-    artifact: 'dependency-1-{pretty-version}.tar.gz'
-    type: 'tar'
-    command: 'install'
-  output:
-    existing:
-      - /vendor/openeuropa/dependency-1/composer.json
-      - /vendor/openeuropa/dependency-2/composer.json
-      - /vendor/openeuropa/dependency-1/artifact.txt
--
-  input:
-    file: 'composer4.json'
-    artifact: 'dependency-1-{pretty-version}.zip'
-    type: 'zip'
-    command: 'install'
-  output:
-    existing:
-      - /vendor/openeuropa/dependency-1/composer.json
-      - /vendor/openeuropa/dependency-2/composer.json
-      - /vendor/openeuropa/dependency-1/artifact.txt
--
-  input:
     file: 'composer1.json'
     artifact: 'dependency-1-{pretty-version}.tar.gz'
     type: 'tar'
