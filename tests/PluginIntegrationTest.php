@@ -48,6 +48,10 @@ class PluginIntegrationTest extends TestCase
         foreach ($output['existing'] as $file) {
             $this->assertFileExists($this->path('/main').$file);
         }
+
+        foreach ($output['non-existing'] as $file) {
+            $this->assertFileNotExists($this->path('/main').$file);
+        }
     }
 
     /**

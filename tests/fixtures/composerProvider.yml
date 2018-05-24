@@ -30,4 +30,5 @@
     existing:
       - /vendor/openeuropa/dependency-1/composer.json
       - /vendor/openeuropa/dependency-2/composer.json
+      # @todo: The following file is not supposed to exist. We need a follow up ticket to fix this.
       - /vendor/openeuropa/dependency-1/artifact.txt
