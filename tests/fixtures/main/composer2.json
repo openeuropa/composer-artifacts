@@ -1,0 +1,25 @@
+{
+  "name": "openeuropa/main",
+  "require": {
+    "openeuropa/dependency-1": "1.0.0"
+  },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../*"
+    }
+  ],
+  "extra": {
+    "artifacts": {
+      "openeuropa/dependency-1": {
+        "dist": {
+          "url": "dependency-1-{pretty-version}.zip",
+          "type": "zip"
+        }
+      }
+    }
+  },
+  "config": {
+    "cache-files-ttl": 0
+  }
+}

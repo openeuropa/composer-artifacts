@@ -13,8 +13,8 @@
     "artifacts": {
       "openeuropa/dependency-1": {
         "dist": {
-          "url": "file://%ARTIFACT%",
-          "type": "%TYPE%"
+          "url": "dependency-1-{pretty-version}.tar.gz",
+          "type": "tar"
         }
       }
     }
