@@ -56,6 +56,20 @@
 
 -
   input:
+    name: my-vendor/my-project
+    version: 1.0.0
+    prettyVersion: 1.0.0
+    extra:
+      artifacts:
+       "my-vendor/my-project":
+         dist:
+           url: "{vendor-name}-{project-name}.tar.gz"
+           type: tar
+  output:
+    getDistUrl: "my-vendor-my-project.tar.gz"
+
+-
+  input:
     name: test/test
     version: 1.0.0
     prettyVersion: 1.0.0

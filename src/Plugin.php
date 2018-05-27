@@ -104,7 +104,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     private function getPluginTokens(Package $package)
     {
+        list($vendorName, $projectName) = explode('/', $package->getPrettyName());
+
         return [
+            '{vendor-name}' => $vendorName,
+            '{project-name}' => $projectName,
             '{pretty-version}' => $package->getPrettyVersion(),
             '{version}' => $package->getVersion(),
             '{name}' => $package->getName(),

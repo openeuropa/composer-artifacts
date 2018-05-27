@@ -35,6 +35,38 @@
     {
       "name": "openeuropa/main",
       "require": {
+        "openeuropa/dependency-1": "~1"
+      },
+      "repositories": [
+        { "type": "path", "url": "../*" }
+      ],
+      "extra": {
+        "artifacts": {
+          "openeuropa/dependency-1": {
+            "dist": {
+              "url": "file:///artifacts/{project-name}-{pretty-version}.tar.gz",
+              "type": "tar"
+            }
+          }
+        }
+      },
+      "config": {
+        "cache-files-ttl": 0
+      }
+    }
+  command: 'install'
+  assert:
+    existing:
+      - /main/vendor/openeuropa/dependency-1/composer.json
+      - /main/vendor/openeuropa/dependency-2/composer.json
+      - /main/vendor/openeuropa/dependency-1/artifact.txt
+    non-existing: []
+
+-
+  composer: |
+    {
+      "name": "openeuropa/main",
+      "require": {
         "openeuropa/dependency-1": "1.0.0"
       },
       "repositories": [
