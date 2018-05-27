@@ -34,9 +34,7 @@ This will fetch `dist` content from:
 https://github.com/foo/bar/releases/download/0.1.0/bar-0.1.0.tar.gz"
 ```
 
-Valid `type` values are `tar` and `zip`
-
-Available tokens are:
+Valid `type` values are `tar` and `zip` while available URL replacement tokens are:
 
 - `{name}`: the full package's name without version info, e.g. `foo/bar`
 - `{vendor-name}`: just the vendor name, e.g. `foo`
@@ -46,4 +44,3 @@ Available tokens are:
 - `{stability}`: the stability of this package, e.g. `dev`, `alpha`, `beta`, `RC` or `stable`
 - `{type}`: the package type, e.g. `library`
 - `{checksum}`: the SHA1 checksum for the distribution archive of this version
-
