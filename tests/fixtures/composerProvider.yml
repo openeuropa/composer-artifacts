@@ -1,34 +1,97 @@
 -
-  input:
-    file: 'composer1.json'
-    artifact: 'dependency-1-{pretty-version}.tar.gz'
-    type: 'tar'
-    command: 'install'
-  output:
+  composer: |
+    {
+      "name": "openeuropa/main",
+      "require": {
+        "openeuropa/dependency-1": "1.0.0"
+      },
+      "repositories": [
+        { "type": "path", "url": "../*" }
+      ],
+      "extra": {
+        "artifacts": {
+          "openeuropa/dependency-1": {
+            "dist": {
+              "url": "file:///artifacts/dependency-1-{pretty-version}.tar.gz",
+              "type": "tar"
+            }
+          }
+        }
+      },
+      "config": {
+        "cache-files-ttl": 0
+      }
+    }
+  command: 'install'
+  assert:
     existing:
-      - /vendor/openeuropa/dependency-1/composer.json
-      - /vendor/openeuropa/dependency-2/composer.json
-      - /vendor/openeuropa/dependency-1/artifact.txt
+      - /main/vendor/openeuropa/dependency-1/composer.json
+      - /main/vendor/openeuropa/dependency-2/composer.json
+      - /main/vendor/openeuropa/dependency-1/artifact.txt
+    non-existing: []
+
 -
-  input:
-    file: 'composer2.json'
-    artifact: 'dependency-1-{pretty-version}.zip'
-    type: 'zip'
-    command: 'install'
-  output:
+  composer: |
+    {
+      "name": "openeuropa/main",
+      "require": {
+        "openeuropa/dependency-1": "1.0.0"
+      },
+      "repositories": [
+        { "type": "path", "url": "../*" }
+      ],
+      "extra": {
+        "artifacts": {
+          "openeuropa/dependency-1": {
+            "dist": {
+              "url": "file:///artifacts/dependency-1-{pretty-version}.zip",
+              "type": "zip"
+            }
+          }
+        }
+      },
+      "config": {
+        "cache-files-ttl": 0
+      }
+    }
+  command: 'install'
+  assert:
     existing:
-      - /vendor/openeuropa/dependency-1/composer.json
-      - /vendor/openeuropa/dependency-2/composer.json
-      - /vendor/openeuropa/dependency-1/artifact.txt
+      - /main/vendor/openeuropa/dependency-1/composer.json
+      - /main/vendor/openeuropa/dependency-2/composer.json
+      - /main/vendor/openeuropa/dependency-1/artifact.txt
+    non-existing: []
+
 -
-  input:
-    file: 'composer1.json'
-    artifact: 'dependency-1-{pretty-version}.tar.gz'
-    type: 'tar'
-    command: 'install --prefer-source'
-  output:
+  composer: |
+    {
+      "name": "openeuropa/main",
+      "require": {
+        "openeuropa/dependency-1": "1.0.0"
+      },
+      "repositories": [
+        { "type": "path", "url": "../*" }
+      ],
+      "extra": {
+        "artifacts": {
+          "openeuropa/dependency-1": {
+            "dist": {
+              "url": "file:///artifacts/dependency-1-{pretty-version}.zip",
+              "type": "zip"
+            }
+          }
+        }
+      },
+      "config": {
+        "cache-files-ttl": 0
+      }
+    }
+  command: 'install'
+  assert:
     existing:
-      - /vendor/openeuropa/dependency-1/composer.json
-      - /vendor/openeuropa/dependency-2/composer.json
-      # @todo: The following file is not supposed to exist. We need a follow up ticket to fix this.
-      - /vendor/openeuropa/dependency-1/artifact.txt
+      - /main/vendor/openeuropa/dependency-1/composer.json
+      - /main/vendor/openeuropa/dependency-2/composer.json
+    non-existing: []
+# @todo: The following file is not supposed to exist. We need a follow up ticket to fix this.
+#    non-existing: []
+#      - /main/vendor/openeuropa/dependency-1/artifact.txt
