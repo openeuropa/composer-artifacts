@@ -1,0 +1,97 @@
+-
+  input:
+    name: test/test
+    version: 1.0.0
+    prettyVersion: 1.0.0
+    extra:
+      artifacts:
+       "test/test":
+         dist:
+           url: "{version}.tar.gz"
+           type: tar
+  output:
+    getDistUrl: "1.0.0.tar.gz"
+
+-
+  input:
+    name: test/test
+    version: 1.0.0
+    prettyVersion: 1.0.0
+    extra:
+      artifacts:
+       "TEST/TEST":
+         dist:
+           url: "{version}.tar.gz"
+           type: tar
+  output:
+    getDistUrl: "1.0.0.tar.gz"
+
+-
+  input:
+    name: test/test
+    version: 1.0.0
+    prettyVersion: 1.0.0
+    extra:
+      artifacts:
+       "test/TEST":
+         dist:
+           url: "{name}-{version}.tar.gz"
+           type: tar
+  output:
+    getDistUrl: "test/test-1.0.0.tar.gz"
+
+-
+  input:
+    name: TEST/test
+    version: 1.0.0
+    prettyVersion: 1.0.0
+    extra:
+      artifacts:
+       "test/TEST":
+         dist:
+           url: "{name}-{version}.tar.gz"
+           type: tar
+  output:
+    getDistUrl: "test/test-1.0.0.tar.gz"
+
+-
+  input:
+    name: my-vendor/my-project
+    version: 1.0.0
+    prettyVersion: 1.0.0
+    extra:
+      artifacts:
+       "my-vendor/my-project":
+         dist:
+           url: "{vendor-name}-{project-name}.tar.gz"
+           type: tar
+  output:
+    getDistUrl: "my-vendor-my-project.tar.gz"
+
+-
+  input:
+    name: test/test
+    version: 1.0.0
+    prettyVersion: 1.0.0
+    extra:
+      artifacts:
+       "izumi/nakano":
+         dist:
+           url: "{name}-{version}.tar.gz"
+           type: tar
+  output:
+    getDistUrl: null
+
+-
+  input:
+    name: test/test
+    version: 1.0.0
+    prettyVersion: 1.0.0
+    extra:
+      artifacts:
+       "test/test":
+         dist:
+           url: "{name}-{version}-{non-existent}-{tokens}.tar.gz"
+           type: tar
+  output:
+    getDistUrl: "test/test-1.0.0-{non-existent}-{tokens}.tar.gz"

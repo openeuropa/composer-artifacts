@@ -1,0 +1,129 @@
+-
+  composer: |
+    {
+      "name": "openeuropa/main",
+      "require": {
+        "openeuropa/dependency-1": "1.0.0"
+      },
+      "repositories": [
+        { "type": "path", "url": "../*" }
+      ],
+      "extra": {
+        "artifacts": {
+          "openeuropa/dependency-1": {
+            "dist": {
+              "url": "file:///artifacts/dependency-1-{pretty-version}.tar.gz",
+              "type": "tar"
+            }
+          }
+        }
+      },
+      "config": {
+        "cache-files-ttl": 0
+      }
+    }
+  command: 'install'
+  assert:
+    existing:
+      - /main/vendor/openeuropa/dependency-1/composer.json
+      - /main/vendor/openeuropa/dependency-2/composer.json
+      - /main/vendor/openeuropa/dependency-1/artifact.txt
+    non-existing: []
+
+-
+  composer: |
+    {
+      "name": "openeuropa/main",
+      "require": {
+        "openeuropa/dependency-1": "~1"
+      },
+      "repositories": [
+        { "type": "path", "url": "../*" }
+      ],
+      "extra": {
+        "artifacts": {
+          "openeuropa/dependency-1": {
+            "dist": {
+              "url": "file:///artifacts/{project-name}-{pretty-version}.tar.gz",
+              "type": "tar"
+            }
+          }
+        }
+      },
+      "config": {
+        "cache-files-ttl": 0
+      }
+    }
+  command: 'install'
+  assert:
+    existing:
+      - /main/vendor/openeuropa/dependency-1/composer.json
+      - /main/vendor/openeuropa/dependency-2/composer.json
+      - /main/vendor/openeuropa/dependency-1/artifact.txt
+    non-existing: []
+
+-
+  composer: |
+    {
+      "name": "openeuropa/main",
+      "require": {
+        "openeuropa/dependency-1": "1.0.0"
+      },
+      "repositories": [
+        { "type": "path", "url": "../*" }
+      ],
+      "extra": {
+        "artifacts": {
+          "openeuropa/dependency-1": {
+            "dist": {
+              "url": "file:///artifacts/dependency-1-{pretty-version}.zip",
+              "type": "zip"
+            }
+          }
+        }
+      },
+      "config": {
+        "cache-files-ttl": 0
+      }
+    }
+  command: 'install'
+  assert:
+    existing:
+      - /main/vendor/openeuropa/dependency-1/composer.json
+      - /main/vendor/openeuropa/dependency-2/composer.json
+      - /main/vendor/openeuropa/dependency-1/artifact.txt
+    non-existing: []
+
+-
+  composer: |
+    {
+      "name": "openeuropa/main",
+      "require": {
+        "openeuropa/dependency-1": "1.0.0"
+      },
+      "repositories": [
+        { "type": "path", "url": "../*" }
+      ],
+      "extra": {
+        "artifacts": {
+          "openeuropa/dependency-1": {
+            "dist": {
+              "url": "file:///artifacts/dependency-1-{pretty-version}.zip",
+              "type": "zip"
+            }
+          }
+        }
+      },
+      "config": {
+        "cache-files-ttl": 0
+      }
+    }
+  command: 'install'
+  assert:
+    existing:
+      - /main/vendor/openeuropa/dependency-1/composer.json
+      - /main/vendor/openeuropa/dependency-2/composer.json
+    non-existing: []
+# @todo: The following file is not supposed to exist. We need a follow up ticket to fix this.
+#    non-existing: []
+#      - /main/vendor/openeuropa/dependency-1/artifact.txt
