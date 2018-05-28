@@ -136,7 +136,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $package->setDistType($distType);
 
         $this->io->writeError(sprintf(
-            'Installing <info>%s</info> artifact from <info>%s</info>.',
+            '  - Installing <info>%s</info> artifact from <info>%s</info>.',
             $package->getName(),
             $package->getDistUrl()
         ));
