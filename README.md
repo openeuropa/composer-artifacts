@@ -12,7 +12,7 @@ In your `extra` section add the following:
 ```json
 {
     "require": {
-        "foo/bar": "0.1.0",
+        "foo/bar": "^0.1.0",
         "openeuropa/composer-artifacts": "*"
     },    
     "extra": {
