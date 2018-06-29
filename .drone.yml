@@ -4,14 +4,14 @@ workspace:
 
 services:
   web:
-    image: fpfis/php56-build:latest
+    image: fpfis/php71-build:latest
     environment:
      - DOCUMENT_ROOT=/test/composer-artifacts
 
 pipeline:
 
   composer-install:
-    image: fpfis/php56-build:latest
+    image: fpfis/php71-build:latest
     volumes:
       - /cache:/cache
     commands:
