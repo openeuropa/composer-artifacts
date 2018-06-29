@@ -2,7 +2,7 @@
     "name": "openeuropa/composer-artifacts",
     "description": "Composer plugin that allows to download a specified artifact instead of the default package.",
     "keywords": ["composer-plugin", "artifacts"],
-    "license": "EUPL-1.1",
+    "license": "EUPL-1.2",
     "type": "composer-plugin",
     "prefer-stable": true,
     "require": {
