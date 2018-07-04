@@ -4,14 +4,14 @@ workspace:
 
 services:
   web:
-    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     environment:
-     - DOCUMENT_ROOT=/test/composer-artifacts
+      - DOCUMENT_ROOT=/test/composer-artifacts
 
 pipeline:
-
   composer-install:
-    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    group: prepare
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     volumes:
       - /cache:/cache
     commands:
@@ -19,17 +19,17 @@ pipeline:
 
   grumphp:
     group: test
-    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     commands:
       - ./vendor/bin/grumphp run
 
   phpunit:
     group: test
-    image: ${IMAGE_PHP=fpfis/php56-build:latest}
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     commands:
       - ./vendor/bin/phpunit
 
 matrix:
   IMAGE_PHP:
-    - fpfis/php56-build:latest
-    - fpfis/php71-build:latest
+    - fpfis/httpd-php-dev:5.6
+    - fpfis/httpd-php-dev:7.1
