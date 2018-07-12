@@ -135,6 +135,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $package->setDistUrl($distUrl);
         $package->setDistType($distType);
 
+        // Disable downloading from source, to ensure the artifacts will be
+        // used even if composer is invoked with the `--prefer-source` option.
+        $package->setSourceType(null);
+
         $this->io->writeError(sprintf(
             '  - Installing <info>%s</info> artifact from <info>%s</info>.',
             $package->getName(),
