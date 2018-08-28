@@ -44,3 +44,23 @@ Valid `type` values are `tar` and `zip` while available URL replacement tokens a
 - `{stability}`: the stability of this package, e.g. `dev`, `alpha`, `beta`, `RC` or `stable`
 - `{type}`: the package type, e.g. `library`
 - `{checksum}`: the SHA1 checksum for the distribution archive of this version
+
+### Using Docker Compose
+
+The setup procedure can be simplified by using Docker Compose.
+
+Copy docker-compose.yml.dist into docker-compose.yml.
+
+You can make any alterations you need for your local Docker setup. However, the defaults should be enough to set the project up.
+
+Run:
+
+```
+$ docker-compose up -d
+```
+
+Then:
+
+```
+$ docker-compose exec web composer install
+```
