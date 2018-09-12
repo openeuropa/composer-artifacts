@@ -49,6 +49,11 @@ Valid `type` values are `tar` and `zip` while available URL replacement tokens a
 
 The setup procedure can be simplified by using Docker Compose.
 
+Requirements:
+
+- [Docker](https://www.docker.com/get-docker)
+- [Docker-compose](https://docs.docker.com/compose/)
+
 Copy docker-compose.yml.dist into docker-compose.yml.
 
 You can make any alterations you need for your local Docker setup. However, the defaults should be enough to set the project up.
