@@ -1,6 +1,6 @@
 # Composer Artifacts
-
 [![Build Status](https://drone.fpfis.eu/api/badges/openeuropa/composer-artifacts/status.svg?branch=master)](https://drone.fpfis.eu/openeuropa/composer-artifacts)
+[![Packagist](https://img.shields.io/packagist/v/openeuropa/composer-artifacts.svg)](https://packagist.org/packages/openeuropa/composer-artifacts)
 
 Composer plugin that allows to download a specified artifact instead of the default `dist` URL, this allows
 to download all artifact dependencies too. 
