@@ -6,13 +6,14 @@
     "type": "composer-plugin",
     "prefer-stable": true,
     "require": {
-        "php": ">=5.6",
-        "composer-plugin-api": "^1.1"
+        "composer-plugin-api": "^1.1",
+        "php": ">=5.6"
     },
     "require-dev": {
-        "composer/composer": "^1",
-        "openeuropa/code-review": "^0.2",
-        "phpunit/phpunit": "^5.7||^6.0"
+        "composer/composer": "~1.4",
+        "openeuropa/code-review": "~1.0@alpha",
+        "phpunit/phpunit": "~5.5|~6.0",
+        "symfony/yaml": "~3.4"
     },
     "autoload": {
         "psr-4": {

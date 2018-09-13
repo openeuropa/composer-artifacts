@@ -1,6 +1,6 @@
 # Composer Artifacts
-
 [![Build Status](https://drone.fpfis.eu/api/badges/openeuropa/composer-artifacts/status.svg?branch=master)](https://drone.fpfis.eu/openeuropa/composer-artifacts)
+[![Packagist](https://img.shields.io/packagist/v/openeuropa/composer-artifacts.svg)](https://packagist.org/packages/openeuropa/composer-artifacts)
 
 Composer plugin that allows to download a specified artifact instead of the default `dist` URL, this allows
 to download all artifact dependencies too. 
@@ -48,6 +48,11 @@ Valid `type` values are `tar` and `zip` while available URL replacement tokens a
 ### Using Docker Compose
 
 The setup procedure can be simplified by using Docker Compose.
+
+Requirements:
+
+- [Docker](https://www.docker.com/get-docker)
+- [Docker-compose](https://docs.docker.com/compose/)
 
 Copy docker-compose.yml.dist into docker-compose.yml.
 
