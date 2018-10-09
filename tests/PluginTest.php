@@ -21,7 +21,6 @@ use Symfony\Component\Yaml\Yaml;
  */
 class PluginTest extends TestCase
 {
-
     /**
      * Test Activate.
      *
@@ -93,7 +92,9 @@ class PluginTest extends TestCase
 
         $plugin->prePackageUpdate($event);
 
-        $this->assertEquals($output['getDistUrl'], $package->getDistUrl());
+        foreach ($output as $key => $value) {
+            $this->assertEquals($value, call_user_func([$package, $key]));
+        }
     }
 
     /**

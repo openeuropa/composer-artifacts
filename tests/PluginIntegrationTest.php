@@ -12,45 +12,81 @@ use Symfony\Component\Yaml\Yaml;
 class PluginIntegrationTest extends TestCase
 {
     /**
-     * {@inheritdoc}
+     * @beforeClass
      */
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        // Cleanup leftovers from previous test execution.
         $fs = new Filesystem();
-        $fs->remove($this->path('/main/composer.json'));
-        $fs->remove($this->path('/main/composer.lock'));
-        $fs->removeDirectory($this->path('/main/vendor'));
+        $fs->remove(__DIR__ . '/fixtures' . '/main/composer.json');
+        $fs->remove(__DIR__ . '/fixtures' . '/main/composer.lock');
+        $fs->removeDirectory(__DIR__ . '/fixtures' . '/main/vendor');
     }
 
     /**
-     * Test a given Composer command on given composer.json file.
+     * @afterClass
+     */
+    public static function setUpAfterClass()
+    {
+        $fs = new Filesystem();
+        $fs->remove(__DIR__ . '/fixtures' . '/main/composer.json');
+        $fs->remove(__DIR__ . '/fixtures' . '/main/composer.lock');
+        $fs->removeDirectory(__DIR__ . '/fixtures' . '/main/vendor');
+    }
+
+    /**
+     * Test multiple Composer commands on multiple composer.json file.
+     *
+     * The resulting files and directories (composer.lock and vendor) are not
+     * cleaned after each command on purpose.
      *
      * @param string $composer
-     *      Content of composer.json file.
+     *   Content of composer.json file.
      * @param string $command
-     *      Composer command to be tested.
-     * @param array  $assert
-     *      Assert a list of existing or non-existing files.
+     *   Composer command to be tested.
+     * @param array $assert
+     *   Assert a list of existing or non-existing files.
      *
      * @throws \Exception
      *
      * @dataProvider composerDataProvider
      */
-    public function testComposerCommands($composer, $command, array $assert)
+    public function testComposerCommands($composer, $command, array $assert = array())
     {
+        $this->writeComposerJson($this->path('/main'), $composer);
+
         $application = new TestPluginApplication();
         $application->setWorkingDir($this->path('/main'));
-
-        $this->writeComposerJson($this->path('/main'), $composer);
         $application->runCommand($command);
+        $application->getOutput()->fetch();
+
+        $assert += [
+            'show' => [],
+            'non-show' => [],
+            'existing' => [],
+            'non-existing' => [],
+        ];
 
         foreach ($assert['existing'] as $file) {
             $this->assertFileExists($this->path($file));
         }
-
         foreach ($assert['non-existing'] as $file) {
             $this->assertFileNotExists($this->path($file));
+        }
+
+        $application->runCommand('show');
+        $output = $application->getOutput()->fetch();
+        
+        foreach ($assert['show'] as $show) {
+            $this->assertContains(
+                $show,
+                $output
+            );
+        }
+        foreach ($assert['non-show'] as $nonshow) {
+            $this->assertNotContains(
+                $nonshow,
+                $output
+            );
         }
     }
 
@@ -73,7 +109,7 @@ class PluginIntegrationTest extends TestCase
      */
     private function path($path)
     {
-        return __DIR__.'/fixtures'.$path;
+        return __DIR__ . '/fixtures' . $path;
     }
 
     /**

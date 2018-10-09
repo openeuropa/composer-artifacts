@@ -70,7 +70,7 @@ class TestPluginApplication extends Application
      */
     public function runCommand($input)
     {
-        $input = new StringInput($input.' --working-dir='.$this->workingDir);
+        $input = new StringInput($input . ' --working-dir=' . $this->workingDir);
 
         return $this->run($input, $this->output);
     }

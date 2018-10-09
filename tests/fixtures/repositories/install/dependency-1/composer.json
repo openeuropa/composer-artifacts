@@ -3,11 +3,5 @@
   "version": "1.0.0",
   "require": {
     "openeuropa/dependency-2": "*"
-  },
-  "repositories": [
-    {
-      "type": "path",
-      "url": "../*"
-    }
-  ]
+  }
 }
