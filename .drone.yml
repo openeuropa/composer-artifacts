@@ -9,30 +9,47 @@ services:
       - DOCUMENT_ROOT=/test/composer-artifacts
 
 pipeline:
-  composer-install:
+  composer-install-lowest:
     group: prepare
     image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     volumes:
-      - /cache:/cache
+    - /cache:/cache
     commands:
-      - composer update ${COMPOSER_BOUNDARY}
+    # @todo remove "composer install" step once the following issue is fixed.
+    # @link https://webgate.ec.europa.eu/CITnet/jira/browse/OPENEUROPA-1234
+    - composer install --ansi --no-suggest --no-progress
+    - composer update --prefer-lowest --ansi --no-suggest --no-progress
+    when:
+      matrix:
+        COMPOSER_BOUNDARY: lowest
+
+  composer-install-highest:
+    group: prepare
+    image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
+    volumes:
+    - /cache:/cache
+    commands:
+    - composer install --ansi --no-suggest --no-progress
+    when:
+      matrix:
+        COMPOSER_BOUNDARY: highest
 
   grumphp:
     group: test
     image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     commands:
-      - ./vendor/bin/grumphp run
+    - ./vendor/bin/grumphp run
 
   phpunit:
     group: test
     image: ${IMAGE_PHP=fpfis/httpd-php-dev:5.6}
     commands:
-      - ./vendor/bin/phpunit
+    - ./vendor/bin/phpunit
 
 matrix:
   IMAGE_PHP:
     - fpfis/httpd-php-dev:5.6
     - fpfis/httpd-php-dev:7.1
   COMPOSER_BOUNDARY:
-    - '--prefer-lowest'
-    - ''
+    - lowest
+    - highest
