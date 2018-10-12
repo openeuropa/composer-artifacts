@@ -2,6 +2,6 @@
   "name": "openeuropa/dependency-1",
   "version": "1.0.0",
   "require": {
-    "openeuropa/dependency-2": "*"
+    "openeuropa/dependency-2": "1.0.0"
   }
 }

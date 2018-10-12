@@ -104,7 +104,7 @@ class PluginTest extends TestCase
      */
     public function packageProvider()
     {
-        return Yaml::parseFile(__DIR__.'/fixtures/packageProvider.yml');
+        return Yaml::parseFile(__DIR__ . '/fixtures/packageProvider.yml');
     }
 
     /**
