@@ -11,6 +11,8 @@
            type: tar
   output:
     getDistUrl: "1.0.0.tar.gz"
+    getDistType: "tar"
+    getSourceType: ""
 
 -
   input:
@@ -25,6 +27,8 @@
            type: tar
   output:
     getDistUrl: "1.0.0.tar.gz"
+    getDistType: "tar"
+    getSourceType: ""
 
 -
   input:
@@ -39,6 +43,8 @@
            type: tar
   output:
     getDistUrl: "test/test-1.0.0.tar.gz"
+    getDistType: "tar"
+    getSourceType: ""
 
 -
   input:
@@ -53,6 +59,8 @@
            type: tar
   output:
     getDistUrl: "test/test-1.0.0.tar.gz"
+    getDistType: "tar"
+    getSourceType: ""
 
 -
   input:
@@ -67,6 +75,8 @@
            type: tar
   output:
     getDistUrl: "my-vendor-my-project.tar.gz"
+    getDistType: "tar"
+    getSourceType: ""
 
 -
   input:
@@ -81,6 +91,8 @@
            type: tar
   output:
     getDistUrl: null
+    getDistType: ""
+    getSourceType: ""
 
 -
   input:
@@ -91,7 +103,9 @@
       artifacts:
        "test/test":
          dist:
-           url: "{name}-{version}-{non-existent}-{tokens}.tar.gz"
-           type: tar
+           url: "{name}-{version}-{non-existent}-{tokens}.zip"
+           type: zip
   output:
-    getDistUrl: "test/test-1.0.0-{non-existent}-{tokens}.tar.gz"
+    getDistUrl: "test/test-1.0.0-{non-existent}-{tokens}.zip"
+    getDistType: "zip"
+    getSourceType: ""

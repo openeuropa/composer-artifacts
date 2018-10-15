@@ -29,10 +29,11 @@ class TestPluginApplication extends Application
     public function __construct()
     {
         parent::__construct();
+
         $this->setAutoExit(false);
         $this->setCatchExceptions(false);
+
         $this->output = new BufferedOutput();
-        $this->io = new NullIO();
     }
 
     /**
@@ -47,11 +48,21 @@ class TestPluginApplication extends Application
     }
 
     /**
+     * Return the output
+     *
      * @return \Symfony\Component\Console\Output\BufferedOutput
      */
     public function getOutput()
     {
         return $this->output;
+    }
+
+    /**
+     * Clean the output
+     */
+    public function cleanOutput()
+    {
+        $this->output = new BufferedOutput();
     }
 
     /**
@@ -70,8 +81,9 @@ class TestPluginApplication extends Application
      */
     public function runCommand($input)
     {
-        $input = new StringInput($input.' --working-dir='.$this->workingDir);
+        $commandInput = new StringInput($input . ' --working-dir=' . $this->workingDir);
+        $this->output = new BufferedOutput();
 
-        return $this->run($input, $this->output);
+        return $this->run($commandInput, $this->output);
     }
 }

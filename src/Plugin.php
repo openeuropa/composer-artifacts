@@ -21,7 +21,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Holds the artifacts configuration.
      *
-     * @var mixed[]
+     * @var string[]
      */
     private $config;
 
@@ -35,7 +35,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Get the configuration.
      *
-     * @return mixed[]
+     * @return string[]
      */
     public function getConfig()
     {
@@ -49,7 +49,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $this->io = $io;
         $extra = $composer->getPackage()->getExtra() + ['artifacts' => []];
-        $this->config = $this->ensureLowerCase($extra['artifacts']);
+        $this->config = $this->ensureLowerCaseKeys($extra['artifacts']);
     }
 
     /**
@@ -64,47 +64,73 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * Pre package install callback.
+     * Custom pre-package install event callback that update the package
+     * properties upon 'composer install' command.
      *
      * @param \Composer\Installer\PackageEvent $event
      *   The event.
      */
     public function prePackageInstall(PackageEvent $event)
     {
-        /** @var Package $package */
-        $package = $event->getOperation()->getPackage();
+        /** @var \Composer\DependencyResolver\Operation\InstallOperation $operation */
+        $operation = $event->getOperation();
 
-        if (array_key_exists($package->getName(), $this->getConfig())) {
-            $this->setArtifactDist($package);
+        /** @var Package $package */
+        $package = $operation->getPackage();
+
+        if (\array_key_exists($package->getName(), $this->getConfig())) {
+            $this->updatePackageConfiguration($package);
+
+            $this->io->write(\sprintf(
+                '  - Installing <info>%s</info> with artifact from <info>%s</info>.',
+                $package->getName(),
+                $package->getDistUrl()
+            ));
         }
     }
 
     /**
-     * Pre package update callback.
+     * Custom pre-package update event callback that update the package
+     * properties upon 'composer update' command.
      *
      * @param \Composer\Installer\PackageEvent $event
      *   The event.
      */
     public function prePackageUpdate(PackageEvent $event)
     {
-        /** @var Package $package */
-        $package = $event->getOperation()->getInitialPackage();
+        /** @var \Composer\DependencyResolver\Operation\UpdateOperation $operation */
+        $operation = $event->getOperation();
 
-        if (array_key_exists($package->getName(), $this->getConfig())) {
-            $this->setArtifactDist($package);
+        /** @var Package $package */
+        $package = $operation->getTargetPackage();
+
+        if (\array_key_exists($package->getName(), $this->getConfig())) {
+            $this->updatePackageConfiguration($package);
+
+            $this->io->write(\sprintf(
+                '  - Updating <info>%s</info> with artifact from <info>%s</info>.',
+                $package->getName(),
+                $package->getDistUrl()
+            ));
         }
     }
 
     /**
-     * Set the plugin tokens from the package.
+     * Custom callback that returns tokens from the package.
      *
      * @param \Composer\Package\Package $package
+     *   The package.
      *
-     * @return array
+     * @return string[]
+     *   An array of tokens and values.
      */
     private function getPluginTokens(Package $package)
     {
-        list($vendorName, $projectName) = explode('/', $package->getPrettyName());
+        list($vendorName, $projectName) = \explode(
+            '/',
+            $package->getPrettyName(),
+            2
+        );
 
         return [
             '{vendor-name}' => $vendorName,
@@ -124,41 +150,44 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      * @param \Composer\Package\Package $package
      *   The package.
      */
-    private function setArtifactDist(Package $package)
+    private function updatePackageConfiguration(Package $package)
     {
-        $tokens = $this->getPluginTokens($package);
-        $config = $this->getConfig();
-
-        $distUrl = strtr($config[$package->getName()]['dist']['url'], $tokens);
-        $distType = strtr($config[$package->getName()]['dist']['type'], $tokens);
-
-        $package->setDistUrl($distUrl);
-        $package->setDistType($distType);
-
         // Disable downloading from source, to ensure the artifacts will be
         // used even if composer is invoked with the `--prefer-source` option.
         $package->setSourceType(null);
 
-        $this->io->writeError(sprintf(
-            '  - Installing <info>%s</info> artifact from <info>%s</info>.',
-            $package->getName(),
-            $package->getDistUrl()
-        ));
+        $tokens = $this->getPluginTokens($package);
+        $config = $this->getConfig();
+
+        $package->setDistUrl(
+            \strtr(
+                $config[$package->getName()]['dist']['url'],
+                $tokens
+            )
+        );
+        $package->setDistType(
+            \strtr(
+                $config[$package->getName()]['dist']['type'],
+                $tokens
+            )
+        );
     }
 
     /**
-     * Make sure that package names are in lowercase.
+     * Ensure that array keys are in lowercase.
      *
-     * @param array $array
+     * @param string[] $array
+     *   The input array.
      *
-     * @return array
+     * @return string[]
+     *   The output array.
      */
-    private function ensureLowerCase(array $array)
+    private function ensureLowerCaseKeys(array $array)
     {
-        return array_combine(
-            array_map(
-                'strtolower',
-                array_keys($array)
+        return \array_combine(
+            \array_map(
+                '\strtolower',
+                \array_keys($array)
             ),
             $array
         );

@@ -2,8 +2,8 @@
 
 namespace OpenEuropa\ComposerArtifacts\Tests;
 
-use Composer\Util\Filesystem;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -12,45 +12,85 @@ use Symfony\Component\Yaml\Yaml;
 class PluginIntegrationTest extends TestCase
 {
     /**
+     * @beforeClass
+     */
+    public static function setUpBeforeClass()
+    {
+        $fs = new Filesystem();
+        $fs->mkdir(__DIR__ . '/fixtures/main');
+    }
+
+    /**
+     * @afterClass
+     */
+    public static function setUpAfterClass()
+    {
+        $fs = new Filesystem();
+        $fs->remove(__DIR__ . '/fixtures/main');
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function setUp()
     {
-        // Cleanup leftovers from previous test execution.
         $fs = new Filesystem();
-        $fs->remove($this->path('/main/composer.json'));
-        $fs->remove($this->path('/main/composer.lock'));
-        $fs->removeDirectory($this->path('/main/vendor'));
+        $fs->remove(glob($this->path('/main/*')));
     }
 
     /**
-     * Test a given Composer command on given composer.json file.
+     * Test multiple Composer commands on multiple composer.json file.
+     *
+     * The resulting files and directories (composer.lock and vendor) are not
+     * cleaned after each command on purpose.
      *
      * @param string $composer
-     *      Content of composer.json file.
-     * @param string $command
-     *      Composer command to be tested.
-     * @param array  $assert
-     *      Assert a list of existing or non-existing files.
+     *   Content of composer.json file.
+     * @param string|array $commands
+     *   Composer command to be tested.
+     * @param array $assert
+     *   Assert a list of existing or non-existing files.
      *
      * @throws \Exception
      *
      * @dataProvider composerDataProvider
      */
-    public function testComposerCommands($composer, $command, array $assert)
+    public function testComposerCommands($composer, $commands, array $assert = array())
     {
+        $assert += [
+            'show' => [],
+            'non-show' => [],
+            'existing' => [],
+            'non-existing' => [],
+        ];
+
+        if (is_string($commands)) {
+            $commands = [$commands];
+        }
+        $commands[] = 'show';
+
         $application = new TestPluginApplication();
         $application->setWorkingDir($this->path('/main'));
-
         $this->writeComposerJson($this->path('/main'), $composer);
-        $application->runCommand($command);
+
+        // Run all commands
+        foreach ($commands as $command) {
+            $application->runCommand($command);
+        }
+
+        $output = $application->getOutput()->fetch();
 
         foreach ($assert['existing'] as $file) {
             $this->assertFileExists($this->path($file));
         }
-
         foreach ($assert['non-existing'] as $file) {
             $this->assertFileNotExists($this->path($file));
+        }
+        foreach ($assert['show'] as $show) {
+            $this->assertContains($show, $output);
+        }
+        foreach ($assert['non-show'] as $nonshow) {
+            $this->assertNotContains($nonshow, $output);
         }
     }
 
@@ -59,7 +99,7 @@ class PluginIntegrationTest extends TestCase
      */
     public function composerDataProvider()
     {
-        return Yaml::parseFile(__DIR__.'/fixtures/composerProvider.yml');
+        return Yaml::parseFile($this->path('/composerProvider.yml'));
     }
 
     /**
@@ -73,7 +113,7 @@ class PluginIntegrationTest extends TestCase
      */
     private function path($path)
     {
-        return __DIR__.'/fixtures'.$path;
+        return __DIR__ . '/fixtures' . $path;
     }
 
     /**
@@ -87,11 +127,11 @@ class PluginIntegrationTest extends TestCase
     private function writeComposerJson($path, $content)
     {
         $replace = [
-            'file:///artifacts' => 'file://'.$this->path('/artifacts'),
+            'file:///artifacts' => 'file://' . $this->path('/artifacts'),
         ];
 
         file_put_contents(
-            $path.'/composer.json',
+            $path . '/composer.json',
             str_replace(array_keys($replace), $replace, $content)
         );
     }

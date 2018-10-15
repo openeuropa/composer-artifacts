@@ -8,4 +8,4 @@ parameters:
     - inc
   tasks.phpmd.exclude:
     - vendor/
-    - tests/
+    - tests/fixtures/
