@@ -1,10 +1,18 @@
 # Change Log
 
+## [0.1.3](https://github.com/openeuropa/composer-artifacts/tree/0.1.3) (2018-10-15)
+[Full Changelog](https://github.com/openeuropa/composer-artifacts/compare/0.1.2...0.1.3)
+
+**Merged pull requests:**
+
+- OPENEUROPA-1245: Composer artifact update issue.  [\#11](https://github.com/openeuropa/composer-artifacts/pull/11) ([drupol](https://github.com/drupol))
+
 ## [0.1.2](https://github.com/openeuropa/composer-artifacts/tree/0.1.2) (2018-09-27)
 [Full Changelog](https://github.com/openeuropa/composer-artifacts/compare/0.1.1...0.1.2)
 
 **Merged pull requests:**
 
+- OPENEUROPA-1241: Update CHANGELOG.md. [\#10](https://github.com/openeuropa/composer-artifacts/pull/10) ([voidtek](https://github.com/voidtek))
 - OPENEUROPA-1212: Relax dependencies on composer.json. [\#9](https://github.com/openeuropa/composer-artifacts/pull/9) ([voidtek](https://github.com/voidtek))
 
 ## [0.1.1](https://github.com/openeuropa/composer-artifacts/tree/0.1.1) (2018-08-28)
