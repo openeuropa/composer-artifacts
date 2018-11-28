@@ -10,6 +10,7 @@ use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
 use Composer\Package\Package;
 use Composer\Plugin\PluginInterface;
+use OpenEuropa\ComposerArtifacts\Provider\AbstractProviderInterface;
 
 /**
  * Class Plugin
@@ -49,6 +50,14 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $this->io = $io;
         $extra = $composer->getPackage()->getExtra() + ['artifacts' => []];
+
+        $extra['artifacts'] = array_map(
+            function ($data) {
+                return $data + ['provider' => 'github'];
+            },
+            $extra['artifacts']
+        );
+
         $this->config = $this->ensureLowerCaseKeys($extra['artifacts']);
     }
 
@@ -69,6 +78,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      *
      * @param \Composer\Installer\PackageEvent $event
      *   The event.
+     *
+     * @throws \Exception
      */
     public function prePackageInstall(PackageEvent $event)
     {
@@ -95,6 +106,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      *
      * @param \Composer\Installer\PackageEvent $event
      *   The event.
+     *
+     * @throws \Exception
      */
     public function prePackageUpdate(PackageEvent $event)
     {
@@ -116,61 +129,54 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * Custom callback that returns tokens from the package.
-     *
-     * @param \Composer\Package\Package $package
-     *   The package.
-     *
-     * @return string[]
-     *   An array of tokens and values.
-     */
-    private function getPluginTokens(Package $package)
-    {
-        list($vendorName, $projectName) = \explode(
-            '/',
-            $package->getPrettyName(),
-            2
-        );
-
-        return [
-            '{vendor-name}' => $vendorName,
-            '{project-name}' => $projectName,
-            '{pretty-version}' => $package->getPrettyVersion(),
-            '{version}' => $package->getVersion(),
-            '{name}' => $package->getName(),
-            '{stability}' => $package->getStability(),
-            '{type}' => $package->getType(),
-            '{checksum}' => $package->getDistSha1Checksum(),
-        ];
-    }
-
-    /**
      * Custom callback that update a package properties.
      *
      * @param \Composer\Package\Package $package
      *   The package.
+     *
+     * @throws \Exception
      */
     private function updatePackageConfiguration(Package $package)
     {
         // Disable downloading from source, to ensure the artifacts will be
         // used even if composer is invoked with the `--prefer-source` option.
         $package->setSourceType(null);
+        $provider = $this->getProvider($package);
 
-        $tokens = $this->getPluginTokens($package);
-        $config = $this->getConfig();
+        $provider->updatePackageConfiguration();
+    }
 
-        $package->setDistUrl(
-            \strtr(
-                $config[$package->getName()]['dist']['url'],
-                $tokens
-            )
-        );
-        $package->setDistType(
-            \strtr(
-                $config[$package->getName()]['dist']['type'],
-                $tokens
-            )
-        );
+    /**
+     * Get a provider.
+     *
+     * @param \Composer\Package\Package $package
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    private function getProvider(Package $package)
+    {
+        $config = $this->getConfig()[$package->getName()];
+
+        $candidates = [
+            'OpenEuropa\ComposerArtifacts\Provider\\' . \ucfirst($config['provider']),
+            $config['provider'],
+        ];
+
+        foreach ($candidates as $provider) {
+            if (!class_exists($provider)) {
+                continue;
+            }
+
+            if (!in_array(AbstractProviderInterface::class, class_implements($provider), true)) {
+                continue;
+            }
+
+            return new $provider($package, $config, $this);
+        }
+
+        // @todo: be more verbose here.
+        throw new \Exception('No provider found.');
     }
 
     /**
