@@ -56,6 +56,8 @@ class PluginTest extends TestCase
      *   The input data.
      * @param array $output
      *   The output data.
+     *
+     * @throws \Exception
      */
     public function testPrePackageInstall($input, $output)
     {
@@ -66,7 +68,7 @@ class PluginTest extends TestCase
             $this->eventPopulate('install', $input, $output)
         );
 
-        $plugin->prePackageInstall($event);
+        $plugin->eventDispatcher($event);
 
         $this->assertEquals($output['getDistUrl'], $package->getDistUrl());
     }
@@ -80,6 +82,8 @@ class PluginTest extends TestCase
      *   The input data.
      * @param array $output
      *   The output data.
+     *
+     * @throws \Exception
      */
     public function testPrePackageUpdate($input, $output)
     {
@@ -90,7 +94,7 @@ class PluginTest extends TestCase
             $this->eventPopulate('update', $input, $output)
         );
 
-        $plugin->prePackageUpdate($event);
+        $plugin->eventDispatcher($event);
 
         foreach ($output as $key => $value) {
             $this->assertEquals($value, call_user_func([$package, $key]));
@@ -127,13 +131,22 @@ class PluginTest extends TestCase
         $plugin = new Plugin();
         $plugin->activate($composer, $io);
 
-        $operation = 'install' === $operationName ?
-            new InstallOperation($package) :
-            new UpdateOperation($package, $package);
+        $operation = null;
+        $eventName = 'undefined';
+
+        if ($operationName === 'install') {
+            $operation = new InstallOperation($package);
+            $eventName = 'pre-package-install';
+        }
+
+        if ($operationName === 'update') {
+            $operation = new UpdateOperation($package, $package);
+            $eventName = 'pre-package-update';
+        }
 
         return [
             'event' => new PackageEvent(
-                'test',
+                $eventName,
                 $composer,
                 $io,
                 false,
