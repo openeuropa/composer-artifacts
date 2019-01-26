@@ -34,16 +34,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private $io;
 
     /**
-     * Get the configuration.
-     *
-     * @return string[]
-     */
-    public function getConfig()
-    {
-        return $this->config;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function activate(Composer $composer, IOInterface $io)
@@ -59,6 +49,26 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         );
 
         $this->config = $this->ensureLowerCaseKeys($extra['artifacts']);
+    }
+
+    /**
+     * Get the configuration.
+     *
+     * @return string[]
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * Get the composer input/output.
+     *
+     * @return IOInterface
+     */
+    public function getIo()
+    {
+        return $this->io;
     }
 
     /**
