@@ -3,7 +3,6 @@
 namespace OpenEuropa\ComposerArtifacts;
 
 use Composer\Composer;
-use Composer\Config;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
@@ -62,101 +61,58 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * Get the composer input/output.
-     *
-     * @return IOInterface
-     */
-    public function getIo()
-    {
-        return $this->io;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
+        // More event could be added here.
         return [
-            PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
-            PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
+            PackageEvents::PRE_PACKAGE_INSTALL => ['eventDispatcher', PackageEvents::PRE_PACKAGE_INSTALL],
+            PackageEvents::PRE_PACKAGE_UPDATE => ['eventDispatcher', PackageEvents::PRE_PACKAGE_UPDATE],
+            PackageEvents::POST_PACKAGE_INSTALL => ['eventDispatcher', PackageEvents::POST_PACKAGE_INSTALL],
+            PackageEvents::POST_PACKAGE_UPDATE => ['eventDispatcher', PackageEvents::POST_PACKAGE_UPDATE],
         ];
     }
 
     /**
-     * Custom pre-package install event callback that update the package
-     * properties upon 'composer install' command.
-     *
      * @param \Composer\Installer\PackageEvent $event
-     *   The event.
      *
      * @throws \Exception
      */
-    public function prePackageInstall(PackageEvent $event)
+    public function eventDispatcher(PackageEvent $event)
     {
-        /** @var \Composer\DependencyResolver\Operation\InstallOperation $operation */
+        /** @var \Composer\DependencyResolver\Operation\OperationInterface $operation */
         $operation = $event->getOperation();
 
-        /** @var Package $package */
-        $package = $operation->getPackage();
-
-        if (\array_key_exists($package->getName(), $this->getConfig())) {
-            $this->updatePackageConfiguration($package, $event);
-
-            $this->io->write(\sprintf(
-                '  - Installing <info>%s</info> with artifact from <info>%s</info>.',
-                $package->getName(),
-                $package->getDistUrl()
-            ));
+        switch ($event->getName()) {
+            case 'post-package-update':
+            case 'pre-package-update':
+                /** @var Package $package */
+                $package = $operation->getTargetPackage();
+                break;
+            default:
+                /** @var Package $package */
+                $package = $operation->getPackage();
+                break;
         }
-    }
 
-    /**
-     * Custom pre-package update event callback that update the package
-     * properties upon 'composer update' command.
-     *
-     * @param \Composer\Installer\PackageEvent $event
-     *   The event.
-     *
-     * @throws \Exception
-     */
-    public function prePackageUpdate(PackageEvent $event)
-    {
-        /** @var \Composer\DependencyResolver\Operation\UpdateOperation $operation */
-        $operation = $event->getOperation();
-
-        /** @var Package $package */
-        $package = $operation->getTargetPackage();
-
-        if (\array_key_exists($package->getName(), $this->getConfig())) {
-            $this->updatePackageConfiguration($package, $event);
-
-            $this->io->write(\sprintf(
-                '  - Updating <info>%s</info> with artifact from <info>%s</info>.',
-                $package->getName(),
-                $package->getDistUrl()
-            ));
+        if (!isset($this->getConfig()[$package->getName()])) {
+            return;
         }
-    }
 
-    /**
-     * Custom callback that update a package properties.
-     *
-     * @param \Composer\Package\Package $package
-     *   The package.
-     * @param \Composer\Installer\PackageEvent $event
-     *   The event.
-     *
-     * @throws \Exception
-     */
-    private function updatePackageConfiguration(Package $package, PackageEvent $event)
-    {
         // Disable downloading from source, to ensure the artifacts will be
         // used even if composer is invoked with the `--prefer-source` option.
-        $package->setSourceType(null);
-        $provider = $this->getProvider($package);
-        $provider->setEvent($event);
+        $package->setSourceType('');
+
+        /** @var AbstractProviderInterface $provider */
+        $provider = $this->getProvider($package)
+            ->setEvent($event);
 
         $provider->updatePackageConfiguration();
+
+        $this->io->write(
+            $provider->getMessage()
+        );
     }
 
     /**

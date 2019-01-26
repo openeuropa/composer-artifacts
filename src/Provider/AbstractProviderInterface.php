@@ -5,39 +5,47 @@ namespace OpenEuropa\ComposerArtifacts\Provider;
 use Composer\Installer\PackageEvent;
 
 /**
- * Interface AbstractProviderInterface
+ * Interface AbstractProviderInterface.
  */
 interface AbstractProviderInterface
 {
     /**
-    * Update a package properties.
-    */
-    public function updatePackageConfiguration();
+     * Get the event.
+     *
+     * @return packageEvent
+     *   The event
+     */
+    public function getEvent();
+
+    /**
+     * Get the message to display when a particular event is triggered.
+     *
+     * @return string
+     *   The message properly formatted
+     */
+    public function getMessage();
 
     /**
      * Returns tokens from the package.
      *
      * @return string[]
-     *   An array of tokens and values.
+     *   An array of tokens and values
      */
     public function getPluginTokens();
 
     /**
      * Set an event.
      *
-     * @param PackageEvent $event
-     *   The event.
+     * @param packageEvent $event
+     *   The event
      *
-     * @return AbstractProviderInterface
-     *   Return itself.
+     * @return abstractProviderInterface
+     *   Return itself
      */
     public function setEvent(PackageEvent $event);
 
     /**
-     * Get the event.
-     *
-     * @return PackageEvent
-     *   The event.
+     * Update a package properties.
      */
-    public function getEvent();
+    public function updatePackageConfiguration();
 }

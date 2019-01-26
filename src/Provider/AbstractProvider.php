@@ -7,29 +7,29 @@ use Composer\Package\Package;
 use Composer\Plugin\PluginInterface;
 
 /**
- * Class AbstractProvider
+ * Class AbstractProvider.
  */
 abstract class AbstractProvider implements AbstractProviderInterface
 {
-    /**
-     * @var \Composer\Package\Package
-     */
-    protected $package;
-
     /**
      * @var array
      */
     protected $config;
 
     /**
-     * @var \Composer\Plugin\PluginInterface
-     */
-    protected $plugin;
-
-    /**
      * @var \Composer\Installer\PackageEvent
      */
     protected $event;
+
+    /**
+     * @var \Composer\Package\Package
+     */
+    protected $package;
+
+    /**
+     * @var \Composer\Plugin\PluginInterface
+     */
+    protected $plugin;
 
     /**
      * AbstractProvider constructor.
@@ -43,6 +43,41 @@ abstract class AbstractProvider implements AbstractProviderInterface
         $this->package = $package;
         $this->config = $config;
         $this->plugin = $plugin;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEvent()
+    {
+        return $this->event;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMessage()
+    {
+        $message = '';
+
+        switch ($this->getEvent()->getName()) {
+            case 'pre-package-install':
+            case 'post-package-install':
+                $message = '  - Installing <info>%s</info> with artifact from <info>%s</info>.';
+
+                break;
+            case 'pre-package-update':
+            case 'post-package-update':
+                $message = '  - Updating <info>%s</info> with artifact from <info>%s</info>.';
+
+                break;
+        }
+
+        return \sprintf(
+            $message,
+            $this->package->getName(),
+            $this->package->getDistUrl()
+        );
     }
 
     /**
@@ -71,11 +106,6 @@ abstract class AbstractProvider implements AbstractProviderInterface
     /**
      * {@inheritdoc}
      */
-    abstract public function updatePackageConfiguration();
-
-    /**
-     * {@inheritdoc}
-     */
     public function setEvent(PackageEvent $event)
     {
         $this->event = $event;
@@ -86,10 +116,7 @@ abstract class AbstractProvider implements AbstractProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function getEvent()
-    {
-        return $this->event;
-    }
+    abstract public function updatePackageConfiguration();
 
     /**
      * {@inheritdoc}

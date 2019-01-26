@@ -3,7 +3,7 @@
 namespace OpenEuropa\ComposerArtifacts\Provider;
 
 /**
- * Class Github
+ * Class Github.
  */
 class Github extends AbstractProvider
 {
