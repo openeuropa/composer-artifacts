@@ -15,7 +15,7 @@ to download all artifact dependencies too.
 
 ## Installation
 
-The recommended way of installing the OpenEuropa Authorisation module is via [Composer][2].
+The recommended way of installing the plugin is via [Composer][2].
 
 ```bash
 composer require openeuropa/composer-artifacts
