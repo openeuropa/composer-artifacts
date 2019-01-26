@@ -90,7 +90,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $package = $operation->getPackage();
 
         if (\array_key_exists($package->getName(), $this->getConfig())) {
-            $this->updatePackageConfiguration($package);
+            $this->updatePackageConfiguration($package, $event);
 
             $this->io->write(\sprintf(
                 '  - Installing <info>%s</info> with artifact from <info>%s</info>.',
@@ -118,7 +118,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $package = $operation->getTargetPackage();
 
         if (\array_key_exists($package->getName(), $this->getConfig())) {
-            $this->updatePackageConfiguration($package);
+            $this->updatePackageConfiguration($package, $event);
 
             $this->io->write(\sprintf(
                 '  - Updating <info>%s</info> with artifact from <info>%s</info>.',
@@ -133,15 +133,18 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      *
      * @param \Composer\Package\Package $package
      *   The package.
+     * @param \Composer\Installer\PackageEvent $event
+     *   The event.
      *
      * @throws \Exception
      */
-    private function updatePackageConfiguration(Package $package)
+    private function updatePackageConfiguration(Package $package, PackageEvent $event)
     {
         // Disable downloading from source, to ensure the artifacts will be
         // used even if composer is invoked with the `--prefer-source` option.
         $package->setSourceType(null);
         $provider = $this->getProvider($package);
+        $provider->setEvent($event);
 
         $provider->updatePackageConfiguration();
     }

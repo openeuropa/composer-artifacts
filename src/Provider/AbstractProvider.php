@@ -2,6 +2,7 @@
 
 namespace OpenEuropa\ComposerArtifacts\Provider;
 
+use Composer\Installer\PackageEvent;
 use Composer\Package\Package;
 use Composer\Plugin\PluginInterface;
 
@@ -23,7 +24,12 @@ abstract class AbstractProvider implements AbstractProviderInterface
     /**
      * @var \Composer\Plugin\PluginInterface
      */
-    private $plugin;
+    protected $plugin;
+
+    /**
+     * @var \Composer\Installer\PackageEvent
+     */
+    protected $event;
 
     /**
      * AbstractProvider constructor.
@@ -66,4 +72,30 @@ abstract class AbstractProvider implements AbstractProviderInterface
      * {@inheritdoc}
      */
     abstract public function updatePackageConfiguration();
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setEvent(PackageEvent $event)
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEvent()
+    {
+        return $this->event;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getInstallPath()
+    {
+        return $this->getEvent()->getComposer()->getInstallationManager()->getInstallPath($this->package);
+    }
 }
