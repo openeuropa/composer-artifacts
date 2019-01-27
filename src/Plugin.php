@@ -119,9 +119,9 @@ class Plugin implements ComposerArtifactPluginInterface
             return;
         }
 
-        $packageCconfig = $config[$package->getName()];
+        $packageConfig = $config[$package->getName()];
 
-        if (!\in_array($eventName, $packageCconfig['events'], true)) {
+        if (!\in_array($eventName, $packageConfig['events'], true)) {
             return;
         }
 
@@ -129,7 +129,7 @@ class Plugin implements ComposerArtifactPluginInterface
         $provider = $this->getProvider(
             $package,
             $event,
-            $packageCconfig
+            $packageConfig
         );
 
         $provider->updatePackageConfiguration();
