@@ -1,0 +1,1435 @@
+[
+  {
+    "id": 150717031,
+    "status": "success",
+    "stage": "deploy",
+    "name": "job42_clear_cache",
+    "ref": "master",
+    "tag": false,
+    "created_at": "2019-01-24T17:02:49.908Z",
+    "started_at": "2019-01-24T17:04:23.632Z",
+    "finished_at": "2019-01-24T17:05:07.397Z",
+    "duration": 43.764842,
+    "user": {
+      "id": 1,
+      "username": "raph"
+    },
+    "commit": {
+      "id": "12345678901234567890d2145d838b79145e6d68",
+      "short_id": "12345678",
+      "title": "Merge 1",
+      "created_at": "2019-01-24T15:27:10.000Z",
+      "parent_ids": [
+        "1234567896fb7c37d6457f07f69f847715faf06a",
+        "1234567896a73d0b9c5797d53b922b78dcb1bb42"
+      ],
+      "message": "Merge\n",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-24T15:27:10.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-24T15:27:10.000Z"
+    },
+    "pipeline": {
+      "id": 44677016,
+      "sha": "12345678901234567890d2145d838b79145e6d68",
+      "ref": "master",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44677016"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/150717031",
+    "artifacts": [
+      {
+        "file_type": "trace",
+        "size": 5633,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44028,
+      "description": "shared-runners-manager-3.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": null
+  },
+  {
+    "id": 150717030,
+    "status": "success",
+    "stage": "deploy",
+    "name": "bundle:app",
+    "ref": "master",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-24T17:02:49.892Z",
+    "started_at": "2019-01-24T17:04:23.788Z",
+    "finished_at": "2019-01-24T17:05:29.761Z",
+    "duration": 65.973731,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "12345678901234567890d2145d838b79145e6d68",
+      "short_id": "b1a36ef1",
+      "title": "Merge branch dev into master",
+      "created_at": "2019-01-24T15:27:10.000Z",
+      "parent_ids": [
+        "81923c0946fb7c37d6457f07f69f847715faf06a",
+        "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42"
+      ],
+      "message": "Merge branch dev into master",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-24T15:27:10.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-24T15:27:10.000Z"
+    },
+    "pipeline": {
+      "id": 44677016,
+      "sha": "12345678901234567890d2145d838b79145e6d68",
+      "ref": "master",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44677016"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/150717030",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 571351,
+        "filename": "bundle-deploy_master.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 3107,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 2399,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 380986,
+      "description": "shared-runners-manager-5.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-26T17:05:28.415Z"
+  },
+  {
+    "id": 150717029,
+    "status": "success",
+    "stage": "prepare",
+    "name": "i18n:app",
+    "ref": "master",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-24T17:02:49.874Z",
+    "started_at": "2019-01-24T17:02:50.852Z",
+    "finished_at": "2019-01-24T17:03:57.950Z",
+    "duration": 67.097887,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "12345678901234567890d2145d838b79145e6d68",
+      "short_id": "b1a36ef1",
+      "title": "Merge branch dev into master",
+      "created_at": "2019-01-24T15:27:10.000Z",
+      "parent_ids": [
+        "81923c0946fb7c37d6457f07f69f847715faf06a",
+        "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42"
+      ],
+      "message": "Merge branch dev into master",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-24T15:27:10.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-24T15:27:10.000Z"
+    },
+    "pipeline": {
+      "id": 44677016,
+      "sha": "12345678901234567890d2145d838b79145e6d68",
+      "ref": "master",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44677016"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/150717029",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 22221,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 457,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 3264,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44949,
+      "description": "shared-runners-manager-4.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-24T18:03:56.619Z"
+  },
+  {
+    "id": 150717028,
+    "status": "success",
+    "stage": "prepare",
+    "name": "composer:app",
+    "ref": "master",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-24T17:02:49.857Z",
+    "started_at": "2019-01-24T17:02:50.795Z",
+    "finished_at": "2019-01-24T17:03:58.505Z",
+    "duration": 67.709813,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "12345678901234567890d2145d838b79145e6d68",
+      "short_id": "b1a36ef1",
+      "title": "Merge branch dev into master",
+      "created_at": "2019-01-24T15:27:10.000Z",
+      "parent_ids": [
+        "81923c0946fb7c37d6457f07f69f847715faf06a",
+        "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42"
+      ],
+      "message": "Merge branch dev into master",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-24T15:27:10.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-24T15:27:10.000Z"
+    },
+    "pipeline": {
+      "id": 44677016,
+      "sha": "12345678901234567890d2145d838b79145e6d68",
+      "ref": "master",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44677016"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/150717028",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 48762484,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 663155,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 2815,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44949,
+      "description": "shared-runners-manager-4.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-24T18:03:55.451Z"
+  },
+  {
+    "id": 150717027,
+    "status": "success",
+    "stage": "prepare",
+    "name": "compress:app",
+    "ref": "master",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-24T17:02:49.837Z",
+    "started_at": "2019-01-24T17:02:50.730Z",
+    "finished_at": "2019-01-24T17:04:23.349Z",
+    "duration": 92.618662,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "12345678901234567890d2145d838b79145e6d68",
+      "short_id": "b1a36ef1",
+      "title": "Merge branch dev into master",
+      "created_at": "2019-01-24T15:27:10.000Z",
+      "parent_ids": [
+        "81923c0946fb7c37d6457f07f69f847715faf06a",
+        "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42"
+      ],
+      "message": "Merge branch dev into master",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-24T15:27:10.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-24T15:27:10.000Z"
+    },
+    "pipeline": {
+      "id": 44677016,
+      "sha": "12345678901234567890d2145d838b79145e6d68
+      "ref": "master",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44677016"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/150717027",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 49177580,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 660867,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 22111,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44949,
+      "description": "shared-runners-manager-4.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-24T18:04:20.786Z"
+  },
+  {
+    "id": 150594172,
+    "status": "success",
+    "stage": "deploy",
+    "name": "clearcache_dev",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-24T14:04:35.152Z",
+    "started_at": "2019-01-24T14:06:35.678Z",
+    "finished_at": "2019-01-24T14:07:42.056Z",
+    "duration": 66.377605,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42",
+      "short_id": "0cc31ae6",
+      "title": "added foo",
+      "created_at": "2019-01-24T14:04:29.000Z",
+      "parent_ids": [
+        "47df65331c00113c521d86a54a69c170e38e766a"
+      ],
+      "message": "added foo",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-24T14:04:29.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-24T14:04:29.000Z"
+    },
+    "pipeline": {
+      "id": 44646337,
+      "sha": "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44646337"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/150594172",
+    "artifacts": [
+      {
+        "file_type": "trace",
+        "size": 5342,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 380987,
+      "description": "shared-runners-manager-6.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": null
+  },
+  {
+    "id": 150594171,
+    "status": "success",
+    "stage": "deploy",
+    "name": "bundle:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-24T14:04:35.129Z",
+    "started_at": "2019-01-24T14:06:34.417Z",
+    "finished_at": "2019-01-24T14:07:54.477Z",
+    "duration": 80.059632,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42",
+      "short_id": "0cc31ae6",
+      "title": "added foo",
+      "created_at": "2019-01-24T14:04:29.000Z",
+      "parent_ids": [
+        "47df65331c00113c521d86a54a69c170e38e766a"
+      ],
+      "message": "added foo\n",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-24T14:04:29.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-24T14:04:29.000Z"
+    },
+    "pipeline": {
+      "id": 44646337,
+      "sha": "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44646337"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/150594171",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 571347,
+        "filename": "bundle-deploy_dev.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 3109,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 2396,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 380986,
+      "description": "shared-runners-manager-5.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-26T14:07:53.141Z"
+  },
+  {
+    "id": 150594169,
+    "status": "success",
+    "stage": "prepare",
+    "name": "i18n:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-24T14:04:35.101Z",
+    "started_at": "2019-01-24T14:04:45.051Z",
+    "finished_at": "2019-01-24T14:05:50.226Z",
+    "duration": 65.175451,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42",
+      "short_id": "0cc31ae6",
+      "title": "added foo",
+      "created_at": "2019-01-24T14:04:29.000Z",
+      "parent_ids": [
+        "47df65331c00113c521d86a54a69c170e38e766a"
+      ],
+      "message": "added foo\n",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-24T14:04:29.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-24T14:04:29.000Z"
+    },
+    "pipeline": {
+      "id": 44646337,
+      "sha": "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44646337"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/150594169",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 22221,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 456,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 3261,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 380986,
+      "description": "shared-runners-manager-5.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-24T15:05:49.245Z"
+  },
+  {
+    "id": 150594167,
+    "status": "success",
+    "stage": "prepare",
+    "name": "composer:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-24T14:04:35.080Z",
+    "started_at": "2019-01-24T14:04:38.439Z",
+    "finished_at": "2019-01-24T14:06:02.849Z",
+    "duration": 84.410087,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42",
+      "short_id": "0cc31ae6",
+      "title": "added foo",
+      "created_at": "2019-01-24T14:04:29.000Z",
+      "parent_ids": [
+        "47df65331c00113c521d86a54a69c170e38e766a"
+      ],
+      "message": "added foo\n",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-24T14:04:29.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-24T14:04:29.000Z"
+    },
+    "pipeline": {
+      "id": 44646337,
+      "sha": "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44646337"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/150594167",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 48762480,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 663161,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 2812,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44949,
+      "description": "shared-runners-manager-4.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-24T15:06:00.254Z"
+  },
+  {
+    "id": 150594166,
+    "status": "success",
+    "stage": "prepare",
+    "name": "compress:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-24T14:04:35.054Z",
+    "started_at": "2019-01-24T14:04:36.033Z",
+    "finished_at": "2019-01-24T14:06:33.229Z",
+    "duration": 117.195921,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42",
+      "short_id": "0cc31ae6",
+      "title": "added foo",
+      "created_at": "2019-01-24T14:04:29.000Z",
+      "parent_ids": [
+        "47df65331c00113c521d86a54a69c170e38e766a"
+      ],
+      "message": "added foo\n",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-24T14:04:29.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-24T14:04:29.000Z"
+    },
+    "pipeline": {
+      "id": 44646337,
+      "sha": "0cc31ae636a73d0b9c5797d53b922b78dcb1bb42",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44646337"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/150594166",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 49177580,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 660874,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 22108,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44949,
+      "description": "shared-runners-manager-4.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-24T15:06:28.869Z"
+  },
+  {
+    "id": 147968271,
+    "status": "success",
+    "stage": "deploy",
+    "name": "clearcache_dev",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-18T20:29:51.967Z",
+    "started_at": "2019-01-18T20:31:31.994Z",
+    "finished_at": "2019-01-18T20:32:29.035Z",
+    "duration": 57.041362,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "47df65331c00113c521d86a54a69c170e38e766a",
+      "short_id": "47df6533",
+      "title": "added bar",
+      "created_at": "2019-01-18T20:29:36.000Z",
+      "parent_ids": [
+        "0c1e676aed506e6bf93d31f220fb75733f0cd20e"
+      ],
+      "message": "added bar\n",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-18T20:29:36.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-18T20:29:36.000Z"
+    },
+    "pipeline": {
+      "id": 43934856,
+      "sha": "47df65331c00113c521d86a54a69c170e38e766a",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/43934856"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/147968271",
+    "artifacts": [
+      {
+        "file_type": "trace",
+        "size": 5198,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44028,
+      "description": "shared-runners-manager-3.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": null
+  },
+  {
+    "id": 147968270,
+    "status": "success",
+    "stage": "deploy",
+    "name": "bundle:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-18T20:29:51.951Z",
+    "started_at": "2019-01-18T20:31:31.852Z",
+    "finished_at": "2019-01-18T20:32:32.418Z",
+    "duration": 60.565825,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "47df65331c00113c521d86a54a69c170e38e766a",
+      "short_id": "47df6533",
+      "title": "added bar",
+      "created_at": "2019-01-18T20:29:36.000Z",
+      "parent_ids": [
+        "0c1e676aed506e6bf93d31f220fb75733f0cd20e"
+      ],
+      "message": "added bar\n",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-18T20:29:36.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-18T20:29:36.000Z"
+    },
+    "pipeline": {
+      "id": 43934856,
+      "sha": "47df65331c00113c521d86a54a69c170e38e766a",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/43934856"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/147968270",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 571287,
+        "filename": "bundle-deploy_dev.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 3107,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 2396,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 380987,
+      "description": "shared-runners-manager-6.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-20T20:32:30.992Z"
+  },
+  {
+    "id": 147968269,
+    "status": "success",
+    "stage": "prepare",
+    "name": "i18n:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-18T20:29:51.932Z",
+    "started_at": "2019-01-18T20:29:53.108Z",
+    "finished_at": "2019-01-18T20:30:56.611Z",
+    "duration": 63.502955,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "47df65331c00113c521d86a54a69c170e38e766a",
+      "short_id": "47df6533",
+      "title": "added bar",
+      "created_at": "2019-01-18T20:29:36.000Z",
+      "parent_ids": [
+        "0c1e676aed506e6bf93d31f220fb75733f0cd20e"
+      ],
+      "message": "added bar\n",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-18T20:29:36.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-18T20:29:36.000Z"
+    },
+    "pipeline": {
+      "id": 43934856,
+      "sha": "47df65331c00113c521d86a54a69c170e38e766a",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/43934856"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/147968269",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 22221,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 457,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 3261,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44028,
+      "description": "shared-runners-manager-3.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-18T21:30:55.169Z"
+  },
+  {
+    "id": 147968268,
+    "status": "success",
+    "stage": "prepare",
+    "name": "composer:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-18T20:29:51.916Z",
+    "started_at": "2019-01-18T20:29:52.671Z",
+    "finished_at": "2019-01-18T20:30:54.842Z",
+    "duration": 62.171335,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "47df65331c00113c521d86a54a69c170e38e766a",
+      "short_id": "47df6533",
+      "title": "added bar",
+      "created_at": "2019-01-18T20:29:36.000Z",
+      "parent_ids": [
+        "0c1e676aed506e6bf93d31f220fb75733f0cd20e"
+      ],
+      "message": "added bar\n",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-18T20:29:36.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-18T20:29:36.000Z"
+    },
+    "pipeline": {
+      "id": 43934856,
+      "sha": "47df65331c00113c521d86a54a69c170e38e766a",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/43934856"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/147968268",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 48762482,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 663157,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 2846,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44028,
+      "description": "shared-runners-manager-3.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-18T21:30:52.178Z"
+  },
+  {
+    "id": 147968267,
+    "status": "success",
+    "stage": "prepare",
+    "name": "compress:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-18T20:29:51.899Z",
+    "started_at": "2019-01-18T20:29:52.510Z",
+    "finished_at": "2019-01-18T20:31:31.345Z",
+    "duration": 98.834534,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "47df65331c00113c521d86a54a69c170e38e766a",
+      "short_id": "47df6533",
+      "title": "added bar",
+      "created_at": "2019-01-18T20:29:36.000Z",
+      "parent_ids": [
+        "0c1e676aed506e6bf93d31f220fb75733f0cd20e"
+      ],
+      "message": "added bar\n",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-18T20:29:36.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-18T20:29:36.000Z"
+    },
+    "pipeline": {
+      "id": 43934856,
+      "sha": "47df65331c00113c521d86a54a69c170e38e766a",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/43934856"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/147968267",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 49177518,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 660874,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 22108,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44949,
+      "description": "shared-runners-manager-4.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-18T21:31:28.813Z"
+  },
+  {
+    "id": 147923289,
+    "status": "success",
+    "stage": "deploy",
+    "name": "clearcache_dev",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-18T18:15:25.288Z",
+    "started_at": "2019-01-18T18:16:52.162Z",
+    "finished_at": "2019-01-18T18:17:46.078Z",
+    "duration": 53.9161,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "c2d3e33623053438894e4fc5975d535699d2b997",
+      "short_id": "c2d3e336",
+      "title": "added baz",
+      "created_at": "2019-01-18T18:15:13.000Z",
+      "parent_ids": [
+        "31e3a83cebf83dd84f8b04fc631e0062089ed091"
+      ],
+      "message": "added baz",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-18T18:15:13.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-18T18:15:13.000Z"
+    },
+    "pipeline": {
+      "id": 43921114,
+      "sha": "c2d3e33623053438894e4fc5975d535699d2b997",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/43921114"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/147923289",
+    "artifacts": [
+      {
+        "file_type": "trace",
+        "size": 5198,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 380987,
+      "description": "shared-runners-manager-6.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": null
+  },
+  {
+    "id": 147923288,
+    "status": "success",
+    "stage": "deploy",
+    "name": "bundle:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-18T18:15:25.271Z",
+    "started_at": "2019-01-18T18:16:52.288Z",
+    "finished_at": "2019-01-18T18:17:47.417Z",
+    "duration": 55.128988,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "c2d3e33623053438894e4fc5975d535699d2b997",
+      "short_id": "c2d3e336",
+      "title": "added baz",
+      "created_at": "2019-01-18T18:15:13.000Z",
+      "parent_ids": [
+        "31e3a83cebf83dd84f8b04fc631e0062089ed091"
+      ],
+      "message": "added baz",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-18T18:15:13.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-18T18:15:13.000Z"
+    },
+    "pipeline": {
+      "id": 43921114,
+      "sha": "c2d3e33623053438894e4fc5975d535699d2b997",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/43921114"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/147923288",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 571269,
+        "filename": "bundle-deploy_dev.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 3123,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 2396,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 380986,
+      "description": "shared-runners-manager-5.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-20T18:17:46.027Z"
+  },
+  {
+    "id": 147923287,
+    "status": "success",
+    "stage": "prepare",
+    "name": "i18n:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-18T18:15:25.254Z",
+    "started_at": "2019-01-18T18:15:25.698Z",
+    "finished_at": "2019-01-18T18:16:27.191Z",
+    "duration": 61.493693,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "c2d3e33623053438894e4fc5975d535699d2b997",
+      "short_id": "c2d3e336",
+      "title": "added baz",
+      "created_at": "2019-01-18T18:15:13.000Z",
+      "parent_ids": [
+        "31e3a83cebf83dd84f8b04fc631e0062089ed091"
+      ],
+      "message": "added baz",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-18T18:15:13.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-18T18:15:13.000Z"
+    },
+    "pipeline": {
+      "id": 43921114,
+      "sha": "c2d3e33623053438894e4fc5975d535699d2b997",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/43921114"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/147923287",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 22221,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 456,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 3261,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44949,
+      "description": "shared-runners-manager-4.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-18T19:16:26.497Z"
+  },
+  {
+    "id": 147923286,
+    "status": "success",
+    "stage": "prepare",
+    "name": "composer:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-18T18:15:25.237Z",
+    "started_at": "2019-01-18T18:15:25.563Z",
+    "finished_at": "2019-01-18T18:16:42.143Z",
+    "duration": 76.580307,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "c2d3e33623053438894e4fc5975d535699d2b997",
+      "short_id": "c2d3e336",
+      "title": "added baz",
+      "created_at": "2019-01-18T18:15:13.000Z",
+      "parent_ids": [
+        "31e3a83cebf83dd84f8b04fc631e0062089ed091"
+      ],
+      "message": "added baz",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-18T18:15:13.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-18T18:15:13.000Z"
+    },
+    "pipeline": {
+      "id": 43921114,
+      "sha": "c2d3e33623053438894e4fc5975d535699d2b997",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/43921114"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/147923286",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 48762465,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 663180,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 2812,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 380987,
+      "description": "shared-runners-manager-6.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-18T19:16:39.569Z"
+  },
+  {
+    "id": 147923285,
+    "status": "success",
+    "stage": "prepare",
+    "name": "compress:app",
+    "ref": "dev",
+    "tag": false,
+    "coverage": null,
+    "created_at": "2019-01-18T18:15:25.220Z",
+    "started_at": "2019-01-18T18:15:25.563Z",
+    "finished_at": "2019-01-18T18:16:51.668Z",
+    "duration": 86.104672,
+    "user": {
+      "id": 1,
+      "username": "bar",
+      "state": "active",
+      "created_at": "2015-03-26T13:18:32.965Z",
+      "public_email": "raph"
+    },
+    "commit": {
+      "id": "c2d3e33623053438894e4fc5975d535699d2b997",
+      "short_id": "c2d3e336",
+      "title": "added baz",
+      "created_at": "2019-01-18T18:15:13.000Z",
+      "parent_ids": [
+        "31e3a83cebf83dd84f8b04fc631e0062089ed091"
+      ],
+      "message": "added baz",
+      "author_name": "Raph",
+      "author_email": "raph",
+      "authored_date": "2019-01-18T18:15:13.000Z",
+      "committer_name": "Raph",
+      "committer_email": "raph",
+      "committed_date": "2019-01-18T18:15:13.000Z"
+    },
+    "pipeline": {
+      "id": 43921114,
+      "sha": "c2d3e33623053438894e4fc5975d535699d2b997",
+      "ref": "dev",
+      "status": "success",
+      "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/43921114"
+    },
+    "web_url": "https://gitlab.com/openeuropa/dependency-1/-/jobs/147923285",
+    "artifacts": [
+      {
+        "file_type": "archive",
+        "size": 49177518,
+        "filename": "artifacts.zip",
+        "file_format": "zip"
+      },
+      {
+        "file_type": "metadata",
+        "size": 660878,
+        "filename": "metadata.gz",
+        "file_format": "gzip"
+      },
+      {
+        "file_type": "trace",
+        "size": 22108,
+        "filename": "job.log",
+        "file_format": null
+      }
+    ],
+    "runner": {
+      "id": 44028,
+      "description": "shared-runners-manager-3.gitlab.com",
+      "active": true,
+      "is_shared": true,
+      "name": "gitlab-runner",
+      "online": true,
+      "status": "online"
+    },
+    "artifacts_expire_at": "2019-01-18T19:16:49.573Z"
+  }
+]

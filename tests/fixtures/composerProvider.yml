@@ -13,6 +13,41 @@
       "extra": {
         "artifacts": {
           "openeuropa/dependency-1": {
+            "provider": "gitlab",
+            "gitlab_host": 'file:///artifacts/gitlab',
+            "job": "bundle:app"
+          }
+        }
+      },
+      "config": {
+        "cache-files-ttl": 0
+      }
+    }
+  command: 'install'
+  assert:
+    show:
+    - 'openeuropa/dependency-1 1.0.0'
+    - 'openeuropa/dependency-2 1.0.0'
+    existing:
+    - /main/vendor/openeuropa/dependency-1/artifact-version-1.0.0.txt
+    non-existing:
+    - /main/vendor/openeuropa/dependency-1/artifact-version-1.1.0.txt
+
+-
+  composer: |
+    {
+      "name": "openeuropa/main",
+      "require": {
+        "openeuropa/dependency-1": "1.0.0"
+      },
+      "repositories": [
+        {"packagist.org": false},
+        { "type": "path", "url": "../repositories/update/*" },
+        { "type": "path", "url": "../repositories/install/*" }
+      ],
+      "extra": {
+        "artifacts": {
+          "openeuropa/dependency-1": {
             "dist": {
               "url": "file:///artifacts/{project-name}-{pretty-version}.tar.gz",
               "type": "tar"
