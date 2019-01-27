@@ -89,9 +89,11 @@ class Plugin implements ComposerArtifactPluginInterface
     }
 
     /**
+     * Dispatch an event.
+     *
      * @param \Composer\Installer\PackageEvent $event
-     *use Composer\EventDispatcher\EventSubscriberInterface;
-
+     *   The event.
+     *
      * @throws \Exception
      */
     public function eventDispatcher(PackageEvent $event)
@@ -124,8 +126,11 @@ class Plugin implements ComposerArtifactPluginInterface
         }
 
         /** @var AbstractProviderInterface $provider */
-        $provider = $this->getProvider($package)
-            ->setEvent($event);
+        $provider = $this->getProvider(
+            $package,
+            $event,
+            $packageCconfig
+        );
 
         $provider->updatePackageConfiguration();
 
@@ -138,14 +143,19 @@ class Plugin implements ComposerArtifactPluginInterface
      * Get a provider.
      *
      * @param \Composer\Package\Package $package
+     *   The package.
+     * @param \Composer\Installer\PackageEvent $event
+     *   The event.
+     * @param $config
+     *   The config.
      *
-     * @return mixed
+     * @return AbstractProviderInterface
+     *   The provider
+     *
      * @throws \Exception
      */
-    private function getProvider(Package $package)
+    private function getProvider(Package $package, PackageEvent $event, $config)
     {
-        $config = $this->getConfig()[$package->getName()];
-
         $candidates = [
             'OpenEuropa\ComposerArtifacts\Provider\\' . \ucfirst($config['provider']),
             $config['provider'],
@@ -160,7 +170,7 @@ class Plugin implements ComposerArtifactPluginInterface
                 continue;
             }
 
-            return new $provider($package, $config, $this);
+            return new $provider($package, $event, $config, $this);
         }
 
         // @todo: be more verbose here.

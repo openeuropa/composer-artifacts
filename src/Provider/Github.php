@@ -15,16 +15,17 @@ class Github extends AbstractProvider
         parent::updatePackageConfiguration();
 
         $tokens = $this->getPluginTokens();
+        $config = $this->getConfig();
 
-        $this->package->setDistUrl(
+        $this->getPackage()->setDistUrl(
             \strtr(
-                $this->config['dist']['url'],
+                $config['dist']['url'],
                 $tokens
             )
         );
-        $this->package->setDistType(
+        $this->getPackage()->setDistType(
             \strtr(
-                $this->config['dist']['type'],
+                $config['dist']['type'],
                 $tokens
             )
         );

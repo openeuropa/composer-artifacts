@@ -10,6 +10,13 @@ use Composer\Installer\PackageEvent;
 interface AbstractProviderInterface
 {
     /**
+     * Returns the config.
+     *
+     * @return array
+     */
+    public function getConfig();
+
+    /**
      * Get the event.
      *
      * @return packageEvent
@@ -26,6 +33,21 @@ interface AbstractProviderInterface
     public function getMessage();
 
     /**
+     * Get the package.
+     *
+     * @return \Composer\Package\PackageInterface
+     *   The package.
+     */
+    public function getPackage();
+
+    /**
+     * Get the plugin.
+     *
+     * @return \OpenEuropa\ComposerArtifacts\ComposerArtifactPluginInterface
+     */
+    public function getPlugin();
+
+    /**
      * Returns tokens from the package.
      *
      * @return string[]
@@ -34,18 +56,10 @@ interface AbstractProviderInterface
     public function getPluginTokens();
 
     /**
-     * Set an event.
-     *
-     * @param packageEvent $event
-     *   The event
-     *
-     * @return abstractProviderInterface
-     *   Return itself
-     */
-    public function setEvent(PackageEvent $event);
-
-    /**
      * Update a package properties.
+     *
+     * return AbstractProviderInterface
+     *   Return itself.
      */
     public function updatePackageConfiguration();
 }

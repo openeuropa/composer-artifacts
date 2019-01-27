@@ -14,35 +14,45 @@ abstract class AbstractProvider implements AbstractProviderInterface
     /**
      * @var array
      */
-    protected $config;
+    private $config;
 
     /**
      * @var \Composer\Installer\PackageEvent
      */
-    protected $event;
+    private $event;
 
     /**
      * @var \Composer\Package\Package
      */
-    protected $package;
+    private $package;
 
     /**
-     * @var \Composer\Plugin\PluginInterface
+     * @var \OpenEuropa\ComposerArtifacts\ComposerArtifactPluginInterface
      */
-    protected $plugin;
+    private $plugin;
 
     /**
      * AbstractProvider constructor.
      *
      * @param \Composer\Package\Package $package
+     * @param \Composer\Installer\PackageEvent $event
      * @param array $config
      * @param \Composer\Plugin\PluginInterface $plugin
      */
-    public function __construct(Package $package, array $config, PluginInterface $plugin)
+    public function __construct(Package $package, PackageEvent $event, array $config, PluginInterface $plugin)
     {
         $this->package = $package;
         $this->config = $config;
         $this->plugin = $plugin;
+        $this->event = $event;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -83,34 +93,40 @@ abstract class AbstractProvider implements AbstractProviderInterface
     /**
      * {@inheritdoc}
      */
+    public function getPackage()
+    {
+        return $this->package;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPlugin()
+    {
+        return $this->plugin;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getPluginTokens()
     {
         list($vendorName, $projectName) = \explode(
             '/',
-            $this->package->getPrettyName(),
+            $this->getPackage()->getPrettyName(),
             2
         );
 
         return [
             '{vendor-name}' => $vendorName,
             '{project-name}' => $projectName,
-            '{pretty-version}' => $this->package->getPrettyVersion(),
-            '{version}' => $this->package->getVersion(),
-            '{name}' => $this->package->getName(),
-            '{stability}' => $this->package->getStability(),
-            '{type}' => $this->package->getType(),
-            '{checksum}' => $this->package->getDistSha1Checksum(),
+            '{pretty-version}' => $this->getPackage()->getPrettyVersion(),
+            '{version}' => $this->getPackage()->getVersion(),
+            '{name}' => $this->getPackage()->getName(),
+            '{stability}' => $this->getPackage()->getStability(),
+            '{type}' => $this->getPackage()->getType(),
+            '{checksum}' => $this->getPackage()->getDistSha1Checksum(),
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setEvent(PackageEvent $event)
-    {
-        $this->event = $event;
-
-        return $this;
     }
 
     /**
@@ -120,7 +136,9 @@ abstract class AbstractProvider implements AbstractProviderInterface
     {
         // Disable downloading from source, to ensure the artifacts will be
         // used even if composer is invoked with the `--prefer-source` option.
-        $this->package->setSourceType('');
+        $this->getPackage()->setSourceType('');
+
+        return $this;
     }
 
     /**
