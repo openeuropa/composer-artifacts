@@ -116,7 +116,12 @@ abstract class AbstractProvider implements AbstractProviderInterface
     /**
      * {@inheritdoc}
      */
-    abstract public function updatePackageConfiguration();
+    public function updatePackageConfiguration()
+    {
+        // Disable downloading from source, to ensure the artifacts will be
+        // used even if composer is invoked with the `--prefer-source` option.
+        $this->package->setSourceType('');
+    }
 
     /**
      * {@inheritdoc}

@@ -42,7 +42,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         $extra['artifacts'] = array_map(
             function ($data) {
-                return $data + ['provider' => 'github'];
+                return $data + [
+                        'provider' => 'github',
+                        'events' => [
+                            'pre-package-install',
+                            'pre-package-update',
+                        ]
+                    ];
             },
             $extra['artifacts']
         );
@@ -83,8 +89,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         /** @var \Composer\DependencyResolver\Operation\OperationInterface $operation */
         $operation = $event->getOperation();
+        $eventName = $event->getName();
 
-        switch ($event->getName()) {
+        switch ($eventName) {
             case 'post-package-update':
             case 'pre-package-update':
                 /** @var Package $package */
@@ -100,9 +107,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             return;
         }
 
-        // Disable downloading from source, to ensure the artifacts will be
-        // used even if composer is invoked with the `--prefer-source` option.
-        $package->setSourceType('');
+        $packageCconfig = $this->getConfig()[$package->getName()];
+
+        if (!\in_array($eventName, $packageCconfig['events'], true)) {
+            return;
+        }
 
         /** @var AbstractProviderInterface $provider */
         $provider = $this->getProvider($package)

@@ -12,6 +12,8 @@ class Github extends AbstractProvider
      */
     public function updatePackageConfiguration()
     {
+        parent::updatePackageConfiguration();
+
         $tokens = $this->getPluginTokens();
 
         $this->package->setDistUrl(
