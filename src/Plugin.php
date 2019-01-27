@@ -38,7 +38,7 @@ class Plugin implements ComposerArtifactPluginInterface
         $this->io = $io;
         $extra = $composer->getPackage()->getExtra() + ['artifacts' => []];
 
-        $extra['artifacts'] = array_map(
+        $config = array_map(
             function ($data) {
                 return $data + [
                         'provider' => 'github',
@@ -51,7 +51,7 @@ class Plugin implements ComposerArtifactPluginInterface
             $extra['artifacts']
         );
 
-        $this->config = $this->ensureLowerCaseKeys($extra['artifacts']);
+        $this->config = $this->ensureLowerCaseKeys($config);
     }
 
     /**
@@ -89,12 +89,7 @@ class Plugin implements ComposerArtifactPluginInterface
     }
 
     /**
-     * Dispatch an event.
-     *
-     * @param \Composer\Installer\PackageEvent $event
-     *   The event.
-     *
-     * @throws \Exception
+     * {@inheritdoc}
      */
     public function eventDispatcher(PackageEvent $event)
     {
@@ -115,16 +110,20 @@ class Plugin implements ComposerArtifactPluginInterface
                 break;
         }
 
+        // Do nothing if there is no artifact config available for the package.
         if (!isset($config[$package->getName()])) {
             return;
         }
 
+        // Get the artifact configuration of the package.
         $packageConfig = $config[$package->getName()];
 
+        // Do nothing if the current event is not supported by the provider.
         if (!\in_array($eventName, $packageConfig['events'], true)) {
             return;
         }
 
+        // Instantiate the provider.
         /** @var AbstractProviderInterface $provider */
         $provider = $this->getProvider(
             $package,
@@ -132,8 +131,10 @@ class Plugin implements ComposerArtifactPluginInterface
             $packageConfig
         );
 
+        // Update the package configuration.
         $provider->updatePackageConfiguration();
 
+        // Write a message on the console.
         $this->io->write(
             $provider->getMessage()
         );
@@ -162,11 +163,11 @@ class Plugin implements ComposerArtifactPluginInterface
         ];
 
         foreach ($candidates as $provider) {
-            if (!class_exists($provider)) {
+            if (!\class_exists($provider)) {
                 continue;
             }
 
-            if (!in_array(AbstractProviderInterface::class, class_implements($provider), true)) {
+            if (!\in_array(AbstractProviderInterface::class, \class_implements($provider), true)) {
                 continue;
             }
 

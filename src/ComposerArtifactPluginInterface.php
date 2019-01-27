@@ -3,6 +3,7 @@
 namespace OpenEuropa\ComposerArtifacts;
 
 use Composer\EventDispatcher\EventSubscriberInterface;
+use Composer\Installer\PackageEvent;
 use Composer\Plugin\PluginInterface;
 
 /**
@@ -24,4 +25,14 @@ interface ComposerArtifactPluginInterface extends PluginInterface, EventSubscrib
      * @return array
      */
     public function getConfig();
+
+    /**
+     * Dispatch an event.
+     *
+     * @param \Composer\Installer\PackageEvent $event
+     *   The event.
+     *
+     * @throws \Exception
+     */
+    public function eventDispatcher(PackageEvent $event);
 }
