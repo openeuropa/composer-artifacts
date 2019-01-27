@@ -3,12 +3,10 @@
 namespace OpenEuropa\ComposerArtifacts;
 
 use Composer\Composer;
-use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
 use Composer\Package\Package;
-use Composer\Plugin\PluginInterface;
 use OpenEuropa\ComposerArtifacts\Provider\AbstractProviderInterface;
 
 /**
@@ -16,7 +14,7 @@ use OpenEuropa\ComposerArtifacts\Provider\AbstractProviderInterface;
  *
  * @SuppressWarnings(PHPMD.ShortVariable)
  */
-class Plugin implements PluginInterface, EventSubscriberInterface
+class Plugin implements ComposerArtifactPluginInterface
 {
     /**
      * Holds the artifacts configuration.
@@ -67,22 +65,33 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
+     * @return \Composer\IO\IOInterface
+     */
+    public function getIo()
+    {
+        return $this->io;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public static function getSubscribedEvents()
     {
-        // More event could be added here.
-        return [
-            PackageEvents::PRE_PACKAGE_INSTALL => ['eventDispatcher', PackageEvents::PRE_PACKAGE_INSTALL],
-            PackageEvents::PRE_PACKAGE_UPDATE => ['eventDispatcher', PackageEvents::PRE_PACKAGE_UPDATE],
-            PackageEvents::POST_PACKAGE_INSTALL => ['eventDispatcher', PackageEvents::POST_PACKAGE_INSTALL],
-            PackageEvents::POST_PACKAGE_UPDATE => ['eventDispatcher', PackageEvents::POST_PACKAGE_UPDATE],
-        ];
+        $refl = new \ReflectionClass(PackageEvents::class);
+
+        $events = [];
+
+        foreach ($refl->getConstants() as $event) {
+            $events[$event] = 'eventDispatcher';
+        }
+
+        return $events;
     }
 
     /**
      * @param \Composer\Installer\PackageEvent $event
-     *
+     *use Composer\EventDispatcher\EventSubscriberInterface;
+
      * @throws \Exception
      */
     public function eventDispatcher(PackageEvent $event)
@@ -90,6 +99,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         /** @var \Composer\DependencyResolver\Operation\OperationInterface $operation */
         $operation = $event->getOperation();
         $eventName = $event->getName();
+        $config = $this->getConfig();
 
         switch ($eventName) {
             case 'post-package-update':
@@ -103,11 +113,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
                 break;
         }
 
-        if (!isset($this->getConfig()[$package->getName()])) {
+        if (!isset($config[$package->getName()])) {
             return;
         }
 
-        $packageCconfig = $this->getConfig()[$package->getName()];
+        $packageCconfig = $config[$package->getName()];
 
         if (!\in_array($eventName, $packageCconfig['events'], true)) {
             return;
