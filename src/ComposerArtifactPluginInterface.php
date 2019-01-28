@@ -12,12 +12,14 @@ use Composer\Plugin\PluginInterface;
 interface ComposerArtifactPluginInterface extends PluginInterface, EventSubscriberInterface
 {
     /**
-     * Get the IO.
+     * Dispatch an event.
      *
-     * @return \Composer\IO\IOInterface
-     *   The IO.
+     * @param \Composer\Installer\PackageEvent $event
+     *   The event
+     *
+     * @throws \Exception
      */
-    public function getIo();
+    public function eventDispatcher(PackageEvent $event);
 
     /**
      * Get the config.
@@ -29,12 +31,10 @@ interface ComposerArtifactPluginInterface extends PluginInterface, EventSubscrib
     public function getConfig();
 
     /**
-     * Dispatch an event.
+     * Get the IO.
      *
-     * @param \Composer\Installer\PackageEvent $event
-     *   The event.
-     *
-     * @throws \Exception
+     * @return \Composer\IO\IOInterface
+     *   The IO
      */
-    public function eventDispatcher(PackageEvent $event);
+    public function getIo();
 }

@@ -18,13 +18,13 @@ class Github extends AbstractProvider
         $config = $this->getConfig();
 
         $this->getPackage()->setDistUrl(
-            \strtr(
+            strtr(
                 $config['dist']['url'],
                 $tokens
             )
         );
         $this->getPackage()->setDistType(
-            \strtr(
+            strtr(
                 $config['dist']['type'],
                 $tokens
             )

@@ -36,7 +36,7 @@ interface AbstractProviderInterface
      * Get the package.
      *
      * @return \Composer\Package\PackageInterface
-     *   The package.
+     *   The package
      */
     public function getPackage();
 

@@ -83,7 +83,7 @@ abstract class AbstractProvider implements AbstractProviderInterface
                 break;
         }
 
-        return \sprintf(
+        return sprintf(
             $message,
             $this->package->getName(),
             $this->package->getDistUrl()
@@ -111,7 +111,7 @@ abstract class AbstractProvider implements AbstractProviderInterface
      */
     public function getPluginTokens()
     {
-        list($vendorName, $projectName) = \explode(
+        list($vendorName, $projectName) = explode(
             '/',
             $this->getPackage()->getPrettyName(),
             2
