@@ -19,7 +19,7 @@ class Plugin implements ComposerArtifactPluginInterface
     /**
      * Holds the artifacts configuration.
      *
-     * @var string[]
+     * @var array
      */
     private $config;
 
@@ -55,9 +55,7 @@ class Plugin implements ComposerArtifactPluginInterface
     }
 
     /**
-     * Get the configuration.
-     *
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getConfig()
     {
@@ -65,7 +63,7 @@ class Plugin implements ComposerArtifactPluginInterface
     }
 
     /**
-     * @return \Composer\IO\IOInterface
+     * {@inheritdoc}
      */
     public function getIo()
     {

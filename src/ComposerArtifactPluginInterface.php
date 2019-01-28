@@ -23,6 +23,8 @@ interface ComposerArtifactPluginInterface extends PluginInterface, EventSubscrib
      * Get the config.
      *
      * @return array
+     *   The plugin configuration. In composer.json, the 'artifacts' section in
+     *   'extra'.
      */
     public function getConfig();
 
