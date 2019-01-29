@@ -81,7 +81,6 @@ class Gitlab extends AbstractProvider
         $job     = isset($config['job'])   ? $config['job']   : getenv('PIPELINE_JOB');
         $stage   = isset($config['stage']) ? $config['stage'] : getenv('PIPELINE_STAGE');
         $tag     = isset($config['tag'])   ? $config['tag']   : getenv('GITLAB_TAG');
-        $overwrite = (isset($config['overwrite']) && $config['overwrite']);
 
         if (!$job && !$stage) {
             throw new \Exception('At least one specific job or stage must be supplied.');
