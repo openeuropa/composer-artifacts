@@ -14,7 +14,7 @@ namespace OpenEuropa\ComposerArtifacts\Provider;
 
 use Composer\Installer\PackageEvents;
 use Composer\Util\RemoteFilesystem;
-use OpenEuropa\ComposerArtifacts\Utils;
+use Composer\Downloader\DownloadManager;
 use OpenEuropa\ComposerArtifacts\EnhancedZipDownloader;
 
 /**
@@ -57,12 +57,13 @@ class Gitlab extends AbstractProvider
      * PRIVATE-TOKEN: XXX header.
      * @see https://github.com/composer/composer/blob/master/src/Composer/Util/RemoteFilesystem.php#L823
      */
-    public static function urlInsertGitlabToken($url) {
+    public static function urlInsertGitlabToken($url)
+    {
         if (getenv('GITLAB_TOKEN')) {
             $parsed = parse_url($url);
             $parsed['user'] = getenv('GITLAB_TOKEN');
             $parsed['pass'] = 'private-token';
-            $url = Utils::http_build_url($parsed);
+            $url = \http_build_url($parsed);
         }
         return $url;
     }
@@ -131,43 +132,34 @@ class Gitlab extends AbstractProvider
          *
          * In this case:
          * - We rely upon Composer built-in downloader and just substitute the dittribution URL.
-         * - Composer is able to download a private tarball because $project_artifacts_url contains the API credentials, 
+         * - Composer is able to download a private tarball because $project_artifacts_url contains the API credentials,
          * - Since the project was not extracted, not directory hierarchy exists yet. The `in` parameter allowing
          *   to extract in a custom subdirectory is thus ignored.
          */
-        switch ($this->getEvent()->getName()) {
-            case 'pre-package-install':
-            case 'pre-package-update':
-                $this->getPackage()->setDistUrl($project_artifacts_url);
-                $this->getPackage()->setDistType('zip');
-                return;
+        if (in_array($this->getEvent()->getName(), ['pre-package-install', 'pre-package-update'], true)) {
+            /**
+             * Use Composer internal downloading mechanism by setting a dist URL
+             */
+            $this->getPackage()->setDistUrl($project_artifacts_url);
+            $this->getPackage()->setDistType('zip');
+            return;
         }
 
         /**
-         * Use Composer internal downloading mechanism by setting a dist URL
+         * Now in POST_PACKAGE_* events.
+         * Setting setDistUrl() without manually running a Downloader would be useless because package
+         * has already been downloaded and extracted (source of dist). Prepare for custom download.
          */
-        $this->getPackage()->setDistUrl($project_artifacts_url);
+
         // setTargetDir($in); // ToDo
+        $this->getPackage()->setExtra([
+            'buildId'      => $build['id'],
+            'artifactsUrl' => $project_artifacts_url
+        ]);
 
-        /**
-         * Note that default Zip downloader (and extractor) can't be made to overwrite existing files.
-         * While it fits most situations, an alternative is provided and used is the `overwrite` key is used.
-         * @see https://github.com/composer/composer/blob/master/src/Composer/Downloader/ZipDownloader.php#L187
-         */
-        // ToDo: deal with it using "multiple dist URLs"
-        if (!$overwrite) {
-            $this->getPlugin()->getIo()->write("<info>Download tarball using default ZipDownloader");
-            $this->getPackage()->setDistType('zip'); // ToDo: test
-        }
-        else {
-            $this->getPlugin()->getIo()->write("<info>Download tarball using EnhancedZipDownloader");
-            $dm = $this->getEvent()->getComposer()->getDownloadManager();
-            $downloader = new EnhancedZipDownloader($this->getPlugin()->getIo(),
-                                                    $this->getEvent()->getComposer()->getConfig());
-
-            $dm->setDownloader('ezip', $downloader);
-            $this->getPackage()->setDistType('ezip');
-        }
+        $dm = $this->getEvent()->getComposer()->getDownloadManager();
+        // $this->builtInDownload($dm, $project_artifacts_url);
+        $this->customDownload($dm, $project_artifacts_url);
     }
 
     /**
@@ -181,12 +173,16 @@ class Gitlab extends AbstractProvider
         /**
          * @var \Composer\Util\RemoteFilesystem
          */
-        $downloader = new RemoteFilesystem($this->getPlugin()->getIo(),
-                                           $this->getEvent()->getComposer()->getConfig());
-        $raw = $downloader->getContents(parse_url($url, PHP_URL_HOST),
-                                              $url,
-                                              $progress = false,
-                                              $options = ['redirects' => 5]);
+        $downloader = new RemoteFilesystem(
+            $this->getPlugin()->getIo(),
+            $this->getEvent()->getComposer()->getConfig()
+        );
+        $raw = $downloader->getContents(
+            parse_url($url, PHP_URL_HOST),
+            $url,
+            $progress = false,
+            $options = ['redirects' => 5]
+        );
 
         if (null === ($results = json_decode($raw, true))) {
             throw new \Exception("Unreadable Gitlab API response.");
@@ -204,5 +200,47 @@ class Gitlab extends AbstractProvider
             }
         }
         throw new \Exception('No successful build found for the project.');
+    }
+
+    /**
+     * A mean to call our custom downloader.
+     */
+    private function customDownload(DownloadManager $dm, $url)
+    {
+        $downloader = new EnhancedZipDownloader($this->getPlugin()->getIo(), $this->getEvent()->getComposer()->getConfig());
+        $p = $this->getPackage();
+        /* dm->setDownloader('zip+artifacts', $downloader);
+           $p->setDistUrl($url);
+           $p->setDistType('zip+artifacts');
+           $p->setSourceType('git+artifacts');
+           $downloader = $dm->getDownloader($p->getDistType()); */
+        $this->getPlugin()->getIo()->write(sprintf(
+            "<info>Download artifacts using %s into %s",
+            get_class($downloader),
+            $this->getAbsoluteInstallPath()
+        ));
+
+        $downloader->download($p, $this->getAbsoluteInstallPath());
+    }
+
+    /**
+     * While looking promising at first glance, the built-in Zipdownloader (+ extractor) forcefully
+     * clean-up the destination directory. In POST_PACKAGE_* events where artifacts complement the
+     * project, this is useless. Kept here until this is patched upstream or a workaround is found.
+     * @see https://github.com/composer/composer/blob/master/src/Composer/Downloader/ZipDownloader.php#L187
+     */
+    private function builtInDownload(DownloadManager $dm, $url)
+    {
+        $downloader = $dm->getDownloader('zip');
+        $this->getPlugin()->getIo()->write(sprintf(
+            "<info>Download artifacts using %s into %s",
+            get_class($downloader),
+            $this->getAbsoluteInstallPath()
+        ));
+        $p = $this->getPackage();
+        $p->setDistUrl($url);
+        $p->setSourceType('');
+        $p->setDistType('zip');
+        $downloader->download($p, $this->getAbsoluteInstallPath());
     }
 }
