@@ -15,6 +15,7 @@ namespace OpenEuropa\ComposerArtifacts\Provider;
 use Composer\Installer\PackageEvents;
 use Composer\Util\RemoteFilesystem;
 use Composer\Downloader\DownloadManager;
+use Composer\Plugin\PluginInterface;
 use OpenEuropa\ComposerArtifacts\EnhancedZipDownloader;
 
 /**
@@ -23,11 +24,14 @@ use OpenEuropa\ComposerArtifacts\EnhancedZipDownloader;
 class Gitlab extends AbstractProvider
 {
 
+    const PRE_PACKAGE_EVENTS  = ['pre-package-install', 'pre-package-update'];
+    const POST_PACKAGE_EVENTS = ['post-package-install', 'post-package-update'];
+
     /**
      * Gitlab API URL of project builds collection.
      *
      * Emulating GitLab URL on a filesystem is not that easy.
-     * When hitting /job (which returns JSON of latest jobs), return /jobs.txt
+     * When hitting /jobs (which returns JSON of latest jobs), return /jobs.txt
      * otherwise returns the requested artifact stored under the /jobs directory.
      */
     private function getBuildsUrlSuffix()
@@ -36,18 +40,6 @@ class Gitlab extends AbstractProvider
             return 'jobs.txt';
         } else {
             return '/jobs?scope[]=success';
-        }
-    }
-
-    private function getAbsoluteInstallPath()
-    {
-        $path = $this->getInstallPath();
-        /* The project directory may not (yet) exists. As such, relying on realpath() isn't adequate.
-           If the leading component of the project path exists in $CWD, assume it is. */
-        if (file_exists(preg_replace('!/.*!', '', $path))) {
-            return realpath($path) ? : (getcwd() . '/' . $path);
-        } else {
-            return realpath($path) ? : (getcwd() . '/' . $path);
         }
     }
 
@@ -87,16 +79,13 @@ class Gitlab extends AbstractProvider
         }
 
         if (isset($config['in'])) {
-            $in = realpath($config['in']);
-            if (!is_dir($in) || !is_writable($in)) {
-                throw new \Exception("Invalid destination directory {$in}, must be a valid path.");
-            } elseif (strpos($in, $this->getAbsoluteInstallPath()) === false) {
-                throw new \Exception('Destination directory must exist below the project directory.');
+            if (! array_intersect($config['events'], self::POST_PACKAGE_EVENTS)) {
+                throw new \Exception("Custom destination directory only makes sense when extracting artifact on-top of the package rather than replacing it.");
             }
         }
 
         // Repository driver is Vcs\GitLab, Url looks like https://gitlab.com/api/v4/projects/foo%2Fbar%2Fbaz
-        // Use `composer -vvv` to show it.
+        // Use `composer -vvv` to display.
         $project_api_url = $this->getPackage()->getRepository()->getDriver()->getApiUrl();
         $project_api_url = self::urlInsertGitlabToken($project_api_url);
         $project_jobs_url = $project_api_url . '/' . $this->getBuildsUrlSuffix();
@@ -110,7 +99,7 @@ class Gitlab extends AbstractProvider
         );
 
         // Gitlab API URL to download artifact for a given build
-        $project_artifacts_url = $project_api_url . '/' . 'jobs/' . $build['id'] . '/artifacts';
+        $project_artifacts_url = $project_api_url . '/jobs/' . $build['id'] . '/artifacts';
 
         $this->getPlugin()->getIo()->write(sprintf(
             "<info>Latest build [%s]\n- ref: %s\n- stage: %s\n- name: %s\n- at: %s\n- runner: %d -> %s\n- triggered by: %s</info>",
@@ -135,7 +124,7 @@ class Gitlab extends AbstractProvider
          * - Since the project was not extracted, not directory hierarchy exists yet. The `in` parameter allowing
          *   to extract in a custom subdirectory is thus ignored.
          */
-        if (in_array($this->getEvent()->getName(), ['pre-package-install', 'pre-package-update'], true)) {
+        if (in_array($this->getEvent()->getName(), self::PRE_PACKAGE_EVENTS, true)) {
             /**
              * Use Composer internal downloading mechanism by setting a dist URL
              */
@@ -145,20 +134,32 @@ class Gitlab extends AbstractProvider
         }
 
         /**
-         * Now in POST_PACKAGE_* events.
-         * Setting setDistUrl() without manually running a Downloader would be useless because package
+         * At this point, the event is one of POST_PACKAGE_EVENTS.
+         * Setting setDistUrl() without manually running a Downloader is useless: package
          * has already been downloaded and extracted (source of dist). Prepare for custom download.
          */
+        if (isset($config['in'])) {
+            $in = realpath($this->getInstallPath() . '/' . $config['in']);
+            if (!$in || !is_dir($in) || !is_writable($in)) {
+                throw new \Exception("Directory {$in} is not an existing writable directory.");
+            }
+            if (strpos($in, getcwd() . '/' . $this->getInstallPath()) === false) {
+                throw new \Exception('Artifacts destination directory must be inside the package directory.');
+            }
+            $this->getPackage()->setTargetDir($in); // ToDo: not working
+        }
 
-        // setTargetDir($in); // ToDo
         $this->getPackage()->setExtra([
             'buildId'      => $build['id'],
             'artifactsUrl' => $project_artifacts_url
         ]);
 
         $dm = $this->getEvent()->getComposer()->getDownloadManager();
-        // $this->builtInDownload($dm, $project_artifacts_url);
-        $this->customDownload($dm, $project_artifacts_url);
+        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0.99') >= 0) {
+            $this->builtInDownload($dm, $project_artifacts_url);
+        } else {
+            $this->customDownload($dm, $project_artifacts_url);
+        }
     }
 
     /**
@@ -202,6 +203,23 @@ class Gitlab extends AbstractProvider
     }
 
     /**
+     * When user request to extract artifacts on-top of the package, but in a custom subdirectory
+     * we want to ensure this directory already exist.
+     * Should we allow to extract artifacts *outside* package directory?
+     */
+    private function getAbsoluteInstallPath()
+    {
+        $path = $this->getInstallPath();
+        /* The project directory may not (yet) exists. As such, relying on realpath() isn't adequate.
+           If the leading component of the project path exists in $CWD, assume it is. */
+        if (file_exists(preg_replace('!/.*!', '', $path))) {
+            return realpath($path) ? : (getcwd() . '/' . $path); // ToDo
+        } else {
+            return realpath($path) ? : (getcwd() . '/' . $path);
+        }
+    }
+
+    /**
      * A mean to call our custom downloader.
      */
     private function customDownload(DownloadManager $dm, $url)
@@ -227,6 +245,7 @@ class Gitlab extends AbstractProvider
      * clean-up the destination directory. In POST_PACKAGE_* events where artifacts complement the
      * project, this is useless. Kept here until this is patched upstream or a workaround is found.
      * @see https://github.com/composer/composer/blob/master/src/Composer/Downloader/ZipDownloader.php#L187
+     * @see https://github.com/composer/composer/issues/7929
      */
     private function builtInDownload(DownloadManager $dm, $url)
     {
@@ -240,6 +259,7 @@ class Gitlab extends AbstractProvider
         $p->setDistUrl($url);
         $p->setSourceType('');
         $p->setDistType('zip');
+
         $downloader->download($p, $this->getAbsoluteInstallPath());
     }
 }
