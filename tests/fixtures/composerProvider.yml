@@ -3,7 +3,7 @@
     {
       "name": "openeuropa/main",
       "require": {
-        "openeuropa/dependency-1": "1.0.0"
+        "openeuropa/dependency-1": "dev-master"
       },
       "repositories": [
         {"packagist.org": false},
@@ -16,7 +16,7 @@
             "provider": "gitlab",
             "gitlab_host": "file:///artifacts/gitlab",
             "events": [
-                    "post-package-install"
+              "post-package-install"
             ],
             "job": "bundle:app"
           }
