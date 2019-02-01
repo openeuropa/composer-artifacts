@@ -38,7 +38,7 @@ class EnhancedZipDownloader extends ZipDownloader
             mkdir($temporaryDir, 0700);
         }
 
-        // defines: `buildId` and `artifactsUrl`
+        // defines `$buildId` and `$artifactsUrl` variables
         extract($package->getExtra(), EXTR_SKIP);
         $tmpfile = $temporaryDir . '/artifact-' . $buildId . '.zip';
 

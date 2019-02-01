@@ -68,7 +68,7 @@ class Gitlab extends AbstractProvider
         parent::updatePackageConfiguration();
         $config = $this->getConfig();
 
-        $in      = false;
+        $in      = isset($config['in'])    ? $config['in']    : false;
         $ref     = isset($config['ref'])   ? $config['ref']   : preg_replace('/^dev-/', '', $this->getPackage()->getPrettyVersion());
         $job     = isset($config['job'])   ? $config['job']   : getenv('PIPELINE_JOB');
         $stage   = isset($config['stage']) ? $config['stage'] : getenv('PIPELINE_STAGE');
@@ -137,17 +137,9 @@ class Gitlab extends AbstractProvider
          * At this point, the event is one of POST_PACKAGE_EVENTS.
          * Setting setDistUrl() without manually running a Downloader is useless: package
          * has already been downloaded and extracted (source of dist). Prepare for custom download.
+         * Note: Since we initialize the downloader by hand and call download() manually, relying on
+         * $this->getPackage()->setTargetDir() is not an option.
          */
-        if (isset($config['in'])) {
-            $in = realpath($this->getInstallPath() . '/' . $config['in']);
-            if (!$in || !is_dir($in) || !is_writable($in)) {
-                throw new \Exception("Directory {$in} is not an existing writable directory.");
-            }
-            if (strpos($in, getcwd() . '/' . $this->getInstallPath()) === false) {
-                throw new \Exception('Artifacts destination directory must be inside the package directory.');
-            }
-            $this->getPackage()->setTargetDir($in); // ToDo: not working
-        }
 
         $this->getPackage()->setExtra([
             'buildId'      => $build['id'],
@@ -155,10 +147,11 @@ class Gitlab extends AbstractProvider
         ]);
 
         $dm = $this->getEvent()->getComposer()->getDownloadManager();
+        $path = $this->getAbsoluteInstallPath($in);
         if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0.99') >= 0) {
-            $this->builtInDownload($dm, $project_artifacts_url);
+            $this->builtInDownload($dm, $project_artifacts_url, $path);
         } else {
-            $this->customDownload($dm, $project_artifacts_url);
+            $this->customDownload($dm, $project_artifacts_url, $path);
         }
     }
 
@@ -203,41 +196,46 @@ class Gitlab extends AbstractProvider
     }
 
     /**
-     * When user request to extract artifacts on-top of the package, but in a custom subdirectory
-     * we want to ensure this directory already exist.
+     * When user request to extract artifacts nested within package directory tree
+     * instead of top-level, we want to ensure this directory already exist.
      * Should we allow to extract artifacts *outside* package directory?
      */
-    private function getAbsoluteInstallPath()
+    private function getAbsoluteInstallPath($subdirectory = false)
     {
-        $path = $this->getInstallPath();
-        /* The project directory may not (yet) exists. As such, relying on realpath() isn't adequate.
-           If the leading component of the project path exists in $CWD, assume it is. */
-        if (file_exists(preg_replace('!/.*!', '', $path))) {
-            return realpath($path) ? : (getcwd() . '/' . $path); // ToDo
-        } else {
-            return realpath($path) ? : (getcwd() . '/' . $path);
+        if ($subdirectory) {
+            $abs_subdirectory = realpath($this->getInstallPath() . '/' . $subdirectory);
+            if (!$abs_subdirectory || !is_dir($abs_subdirectory) || !is_writable($abs_subdirectory)) {
+                throw new \Exception("Directory {$abs_subdirectory} is not an existing writable directory.");
+            }
+            if (strpos($abs_subdirectory, getcwd() . '/' . $this->getInstallPath()) === false) {
+                throw new \Exception('Artifacts destination directory must be inside the package directory.');
+            }
+            return $abs_subdirectory;
         }
+
+        if (! ($path = realpath($this->getInstallPath()))) {
+            throw new \Exception(sprintf('Could not find destination directory (cwd=%s, install-path=%s)', getcwd(), $this->getInstallPath()));
+        }
+
+        return $path;
     }
 
     /**
      * A mean to call our custom downloader.
      */
-    private function customDownload(DownloadManager $dm, $url)
+    private function customDownload(DownloadManager $dm, $url, $path)
     {
         $downloader = new EnhancedZipDownloader($this->getPlugin()->getIo(), $this->getEvent()->getComposer()->getConfig());
         $p = $this->getPackage();
-        /* dm->setDownloader('zip+artifacts', $downloader);
-           $p->setDistUrl($url);
-           $p->setDistType('zip+artifacts');
-           $p->setSourceType('git+artifacts');
-           $downloader = $dm->getDownloader($p->getDistType()); */
+        // dm->setDownloader('zip+artifacts', $downloader)->setDistUrl($url)->setDistType('zip+artifacts')->setSourceType('git+artifacts');
+        // $downloader = $dm->getDownloader($p->getDistType());
         $this->getPlugin()->getIo()->write(sprintf(
             "<info>Download artifacts using %s into %s",
             get_class($downloader),
-            $this->getAbsoluteInstallPath()
+            $path
         ));
 
-        $downloader->download($p, $this->getAbsoluteInstallPath());
+        $downloader->download($p, $path);
     }
 
     /**
@@ -247,19 +245,19 @@ class Gitlab extends AbstractProvider
      * @see https://github.com/composer/composer/blob/master/src/Composer/Downloader/ZipDownloader.php#L187
      * @see https://github.com/composer/composer/issues/7929
      */
-    private function builtInDownload(DownloadManager $dm, $url)
+    private function builtInDownload(DownloadManager $dm, $url, $path)
     {
         $downloader = $dm->getDownloader('zip');
         $this->getPlugin()->getIo()->write(sprintf(
             "<info>Download artifacts using %s into %s",
             get_class($downloader),
-            $this->getAbsoluteInstallPath()
+            $path
         ));
         $p = $this->getPackage();
         $p->setDistUrl($url);
         $p->setSourceType('');
         $p->setDistType('zip');
 
-        $downloader->download($p, $this->getAbsoluteInstallPath());
+        $downloader->download($p, $path);
     }
 }
