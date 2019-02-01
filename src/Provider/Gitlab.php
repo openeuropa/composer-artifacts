@@ -29,19 +29,8 @@ class Gitlab extends AbstractProvider
 
     /**
      * Gitlab API URL of project builds collection.
-     *
-     * Emulating GitLab URL on a filesystem is not that easy.
-     * When hitting /jobs (which returns JSON of latest jobs), return /jobs.txt
-     * otherwise returns the requested artifact stored under the /jobs directory.
      */
-    private function getBuildsUrlSuffix()
-    {
-        if (getenv('PHPUNIT_TEST') == 1) {
-            return 'jobs.txt';
-        } else {
-            return '/jobs?scope[]=success';
-        }
-    }
+    const BUILD_URL_SUFFIX =  'jobs?scope[]=success';
 
     /**
      * Set user and password to the GitLab API URL so that
@@ -49,8 +38,15 @@ class Gitlab extends AbstractProvider
      * PRIVATE-TOKEN: XXX header.
      * @see https://github.com/composer/composer/blob/master/src/Composer/Util/RemoteFilesystem.php#L823
      */
-    public static function urlInsertGitlabToken($url)
+    public function getProjectApiUrl()
     {
+        /**
+         * Url looks like https://gitlab.com/api/v4/projects/foo%2Fbar%2Fbaz
+         * Use `composer -vvv` to display.
+         * @var \Composer\Repository\Vcs\GitLab
+         */
+        $url = $this->getPackage()->getRepository()->getDriver()->getApiUrl();
+
         if (getenv('GITLAB_TOKEN')) {
             $parsed = parse_url($url);
             $parsed['user'] = getenv('GITLAB_TOKEN');
@@ -84,19 +80,10 @@ class Gitlab extends AbstractProvider
             }
         }
 
-        // Repository driver is Vcs\GitLab, Url looks like https://gitlab.com/api/v4/projects/foo%2Fbar%2Fbaz
-        // Use `composer -vvv` to display.
-        $project_api_url = $this->getPackage()->getRepository()->getDriver()->getApiUrl();
-        $project_api_url = self::urlInsertGitlabToken($project_api_url);
-        $project_jobs_url = $project_api_url . '/' . $this->getBuildsUrlSuffix();
+        $project_api_url = $this->getProjectApiUrl();
 
-        $build = $this->getLatestSuccessfulBuild(
-            $project_jobs_url,
-            $stage,
-            $job,
-            $ref,
-            $tag
-        );
+        $all_builds = $this->getBuilds($project_api_url . '/' . static::BUILD_URL_SUFFIX);
+        $build = self::filterBuils($all_builds, $stage, $job, $ref, $tag);
 
         // Gitlab API URL to download artifact for a given build
         $project_artifacts_url = $project_api_url . '/jobs/' . $build['id'] . '/artifacts';
@@ -156,12 +143,12 @@ class Gitlab extends AbstractProvider
     }
 
     /**
-     * Retrieve latest successful build information
-     * @param  string $url      Gitlab API root URL
+     * Retrieve latest CI builds as JSON
+     * @param  string $url Gitlab API root URL
      * @return array
      * @throws \Exception
      */
-    private function getLatestSuccessfulBuild($url, $stage, $name, $ref, $tag)
+    public function getBuilds($url)
     {
         /**
          * @var \Composer\Util\RemoteFilesystem
@@ -183,6 +170,16 @@ class Gitlab extends AbstractProvider
         if (!$results) {
             throw new \Exception('No successful build found for the project.');
         }
+
+        return $results;
+    }
+
+    /**
+     * Filter builds listing and extracts successful ones matching
+     * a set of criterias.
+     */
+    private static function filterBuils($results, $stage, $name, $ref, $tag)
+    {
         foreach ($results as $item) {
             if ($item['status'] === 'success'
                 && (!$stage || $item['stage'] === $stage)
