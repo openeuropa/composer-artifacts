@@ -321,7 +321,7 @@
     },
     "pipeline": {
       "id": 44677016,
-      "sha": "12345678901234567890d2145d838b79145e6d68
+      "sha": "12345678901234567890d2145d838b79145e6d68",
       "ref": "master",
       "status": "success",
       "web_url": "https://gitlab.com/openeuropa/dependency-1/pipelines/44677016"

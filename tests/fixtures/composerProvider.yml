@@ -14,7 +14,7 @@
         "artifacts": {
           "openeuropa/dependency-1": {
             "provider": "gitlab",
-            "gitlab_host": 'file:///artifacts/gitlab',
+            "gitlab_host": "file:///artifacts/gitlab",
             "events": [
                     "post-package-install"
             ],
