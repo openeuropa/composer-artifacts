@@ -26,7 +26,9 @@
         }
     },
     "extra": {
-        "class": "OpenEuropa\\ComposerArtifacts\\Plugin"
+        "class": "OpenEuropa\\ComposerArtifacts\\Plugin",
+        "enable-patching": true,
+        "composer-exit-on-patch-failure": true
     },
     "config": {
         "sort-packages": true
