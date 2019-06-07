@@ -128,8 +128,8 @@ class PluginTest extends TestCase
         $plugin->activate($composer, $io);
 
         $operation = 'install' === $operationName ?
-            new InstallOperation($package) :
-            new UpdateOperation($package, $package);
+        new InstallOperation($package) :
+        new UpdateOperation($package, $package);
 
         return [
             'event' => new PackageEvent(
