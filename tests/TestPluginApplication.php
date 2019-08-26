@@ -81,7 +81,8 @@ class TestPluginApplication extends Application
      */
     public function runCommand($input)
     {
-        $commandInput = new StringInput($input . ' --working-dir=' . $this->workingDir);
+        $debug = in_array('--debug', $_SERVER['argv'], true) ? '-vvv --profile' : '';
+        $commandInput = new StringInput($input . ' ' . $debug . ' --working-dir=' . $this->workingDir);
         $this->output = new BufferedOutput();
 
         return $this->run($commandInput, $this->output);
