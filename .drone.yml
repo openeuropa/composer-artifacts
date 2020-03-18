@@ -4,14 +4,14 @@ workspace:
 
 services:
   web:
-    image: fpfis/httpd-php-ci:${PHP_VERSION=7.3}
+    image: fpfis/httpd-php-ci:${PHP_VERSION}
     environment:
       - DOCUMENT_ROOT=/test/composer-artifacts
 
 pipeline:
   composer-install-lowest:
     group: prepare
-    image: fpfis/httpd-php-ci:${PHP_VERSION=7.3}
+    image: fpfis/httpd-php-ci:${PHP_VERSION}
     volumes:
     - /cache:/cache
     commands:
@@ -25,7 +25,7 @@ pipeline:
 
   composer-install-highest:
     group: prepare
-    image: fpfis/httpd-php-ci:${PHP_VERSION=7.3}
+    image: fpfis/httpd-php-ci:${PHP_VERSION}
     volumes:
     - /cache:/cache
     commands:
@@ -36,13 +36,13 @@ pipeline:
 
   grumphp:
     group: test
-    image: fpfis/httpd-php-ci:${PHP_VERSION=7.3}
+    image: fpfis/httpd-php-ci:${PHP_VERSION}
     commands:
     - ./vendor/bin/grumphp run
 
   phpunit:
     group: test
-    image: fpfis/httpd-php-ci:${PHP_VERSION=7.3}
+    image: fpfis/httpd-php-ci:${PHP_VERSION}
     commands:
     - ./vendor/bin/phpunit
 
