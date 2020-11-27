@@ -36,7 +36,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Get the configuration.
      *
-     * @return string[]
+     * @return array
      */
     public function getConfig()
     {
