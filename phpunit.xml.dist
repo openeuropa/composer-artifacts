@@ -5,7 +5,7 @@
     <ini name="memory_limit" value="-1"/>
   </php>
   <testsuites>
-    <testsuite>
+    <testsuite name="phpunit">
       <directory>./tests/</directory>
     </testsuite>
   </testsuites>
