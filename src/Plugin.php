@@ -10,6 +10,7 @@ use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
 use Composer\Package\Package;
 use Composer\Plugin\PluginInterface;
+use Composer\Repository\PathRepository;
 
 /**
  * Class Plugin
@@ -35,7 +36,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Get the configuration.
      *
-     * @return string[]
+     * @return array
      */
     public function getConfig()
     {
@@ -157,20 +158,21 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $package->setSourceType(null);
 
         $tokens = $this->getPluginTokens($package);
-        $config = $this->getConfig();
+        $package_config = $this->getConfig()[$package->getName()];
 
-        $package->setDistUrl(
-            \strtr(
-                $config[$package->getName()]['dist']['url'],
-                $tokens
-            )
-        );
-        $package->setDistType(
-            \strtr(
-                $config[$package->getName()]['dist']['type'],
-                $tokens
-            )
-        );
+        // The path repository sets some path-related options like "relative"
+        // which are meaningful only in that specific context. When changing
+        // the repository type, these options are carried over as transport options,
+        // which causes errors with downloaders that use remote file systems.
+        // Remove said option when the repository type is changed.
+        if ($package->getRepository() instanceof PathRepository && $package_config['dist']['type'] !== 'path') {
+            $transportOptions = $package->getTransportOptions();
+            unset($transportOptions['relative']);
+            $package->setTransportOptions($transportOptions);
+        }
+
+        $package->setDistUrl(strtr($package_config['dist']['url'], $tokens));
+        $package->setDistType(strtr($package_config['dist']['type'], $tokens));
     }
 
     /**
