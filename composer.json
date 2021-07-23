@@ -12,10 +12,12 @@
     "require-dev": {
         "composer/composer": "~1.6 || ~2.0",
         "cweagans/composer-patches": "^1.6",
-        "openeuropa/code-review": "~1.5",
         "phpunit/phpunit": "^7.5",
         "symfony/yaml": "~3.4"
     },
+    "_readme": [
+        "phpro/grumphp 0.17.2 requires composer-plugin-api v1, that conflicts with Composer 2"
+    ],
     "autoload": {
         "psr-4": {
             "OpenEuropa\\ComposerArtifacts\\": "./src/"

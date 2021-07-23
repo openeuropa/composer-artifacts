@@ -45,11 +45,11 @@ pipeline:
       matrix:
         COMPOSER_BOUNDARY: highest
 
-  grumphp:
-    group: test
-    image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
-    commands:
-    - ./vendor/bin/grumphp run
+#  grumphp:
+#    group: test
+#    image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
+#    commands:
+#    - ./vendor/bin/grumphp run
 
   phpunit:
     group: test
