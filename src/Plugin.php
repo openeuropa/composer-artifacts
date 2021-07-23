@@ -3,14 +3,15 @@
 namespace OpenEuropa\ComposerArtifacts;
 
 use Composer\Composer;
-use Composer\Config;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
 use Composer\Package\Package;
+use Composer\Plugin\PluginEvents;
 use Composer\Plugin\PluginInterface;
 use Composer\Repository\PathRepository;
+use Composer\Plugin\PrePoolCreateEvent;
 
 /**
  * Class Plugin
@@ -58,10 +59,39 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
+        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
+            // Events for Composer 1.
+            return [
+                PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
+                PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
+            ];
+        }
+        // Events for Composer 2.
         return [
-            PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
-            PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
+            PluginEvents::PRE_POOL_CREATE => 'prePoolCreate',
         ];
+    }
+
+    /**
+     * Custom pre-pool-create event callback that update the package properties.
+     *
+     * @param \Composer\Plugin\PrePoolCreateEvent $event
+     *   The event.
+     */
+    public function prePoolCreate(PrePoolCreateEvent $event)
+    {
+        $packages = $event->getPackages();
+        foreach ($packages as $package) {
+            if (\array_key_exists($package->getName(), $this->getConfig())) {
+                $this->updatePackageConfiguration($package);
+
+                $this->io->write(\sprintf(
+                    '  - Installing <info>%s</info> with artifact from <info>%s</info>.',
+                    $package->getName(),
+                    $package->getDistUrl()
+                ));
+            }
+        }
     }
 
     /**
@@ -193,5 +223,21 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             ),
             $array
         );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deactivate(Composer $composer, IOInterface $io)
+    {
+        // Method is required for Composer 2.
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function uninstall(Composer $composer, IOInterface $io)
+    {
+        // Method is required for Composer 2.
     }
 }

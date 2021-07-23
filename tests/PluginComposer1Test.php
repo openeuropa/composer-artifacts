@@ -11,44 +11,32 @@ use Composer\DependencyResolver\Request;
 use Composer\IO\NullIO;
 use Composer\Package\RootPackage;
 use Composer\Installer\PackageEvent;
+use Composer\Plugin\PluginInterface;
 use Composer\Repository\CompositeRepository;
 use OpenEuropa\ComposerArtifacts\Plugin;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class PluginTest
+ * Class PluginComposer1Test for Composer 1.
+ *
+ * @coversDefaultClass \OpenEuropa\ComposerArtifacts\Plugin
  */
-class PluginTest extends TestCase
+class PluginComposer1Test extends PluginTestBase
 {
     /**
-     * Test Activate.
-     *
-     * @dataProvider packageProvider
-     *
-     * @param array $input
-     *   The input data.
-     * @param array $output
-     *   The output data.
+     * {@inheritdoc}
      */
-    public function testActivate($input, $output)
+    public function setUp()
     {
-        $package = new RootPackage($input['name'], $input['version'], $input['prettyVersion']);
-        $package->setExtra($input['extra']);
-        $io = new NullIO();
-        $composer = new Composer();
-        $composer->setPackage($package);
-
-        $plugin = new Plugin();
-        $plugin->activate($composer, $io);
-
-        $configKeys = array_keys($plugin->getConfig());
-
-        $this->assertEquals(array_map('strtolower', $configKeys), $configKeys);
+        if (!version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
+            $this->markTestSkipped('Test has not to be run on Composer 2.');
+        }
+        parent::setUp();
     }
 
     /**
      * Test prePackageInstall.
+     *
+     * @covers ::prePackageInstall
      *
      * @dataProvider packageProvider
      *
@@ -59,6 +47,10 @@ class PluginTest extends TestCase
      */
     public function testPrePackageInstall($input, $output)
     {
+        if (!version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
+            // Do not run test on Composer 2.
+            return;
+        }
         /** @var $event \Composer\Installer\PackageEvent */
         /** @var $plugin Plugin */
         /** @var $package \Composer\Package\Package */
@@ -74,6 +66,8 @@ class PluginTest extends TestCase
     /**
      * Test prePackageUpdate.
      *
+     * @covers ::prePackageUpdate
+     *
      * @dataProvider packageProvider
      *
      * @param array $input
@@ -83,6 +77,10 @@ class PluginTest extends TestCase
      */
     public function testPrePackageUpdate($input, $output)
     {
+        if (!version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
+            // Do not run test on Composer 2.
+            return;
+        }
         /** @var $event \Composer\Installer\PackageEvent */
         /** @var $plugin Plugin */
         /** @var $package \Composer\Package\Package */
@@ -95,16 +93,6 @@ class PluginTest extends TestCase
         foreach ($output as $key => $value) {
             $this->assertEquals($value, call_user_func([$package, $key]));
         }
-    }
-
-    /**
-     * PHPUnit provider.
-     *
-     * @return mixed[]
-     */
-    public function packageProvider()
-    {
-        return Yaml::parseFile(__DIR__ . '/fixtures/packageProvider.yml');
     }
 
     /**

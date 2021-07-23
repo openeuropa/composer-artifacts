@@ -39,6 +39,7 @@ pipeline:
     volumes:
     - /cache:/cache
     commands:
+    - composer self-update --2
     - composer install --ansi --no-suggest --no-progress
     when:
       matrix:
@@ -58,7 +59,6 @@ pipeline:
 
 matrix:
   PHP_VERSION:
-    - 7.2
     - 7.3
   COMPOSER_BOUNDARY:
     - lowest

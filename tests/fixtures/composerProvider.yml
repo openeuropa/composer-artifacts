@@ -7,7 +7,7 @@
       },
       "repositories": [
         {"packagist.org": false},
-        { "type": "path", "url": "../repositories/update/*" },
+        { "type": "path", "url": "../repositories/update/*", "canonical": false },
         { "type": "path", "url": "../repositories/install/*" }
       ],
       "extra": {
