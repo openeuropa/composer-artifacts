@@ -1,34 +1,23 @@
 <?php
 
-namespace OpenEuropa\ComposerArtifacts\Tests;
+namespace OpenEuropa\ComposerArtifacts\Tests\Composer2;
 
 use Composer\Composer;
 use Composer\DependencyResolver\Request;
 use Composer\IO\NullIO;
 use Composer\Package\RootPackage;
 use Composer\Plugin\PluginEvents;
-use Composer\Plugin\PluginInterface;
 use Composer\Plugin\PrePoolCreateEvent;
 use OpenEuropa\ComposerArtifacts\Plugin;
+use OpenEuropa\ComposerArtifacts\Tests\PluginTestBase;
 
 /**
- * Class PluginComposer2Test for Composer 2
+ * Class PluginTest for Composer 2
  *
  * @coversDefaultClass \OpenEuropa\ComposerArtifacts\Plugin
  */
-class PluginComposer2Test extends PluginTestBase
+class PluginTest extends PluginTestBase
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp()
-    {
-        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
-            $this->markTestSkipped('Test has not to be run on Composer 1.');
-        }
-        parent::setUp();
-    }
-
     /**
      * Test prePoolCreate.
      *
@@ -78,8 +67,8 @@ class PluginComposer2Test extends PluginTestBase
                 PluginEvents::PRE_POOL_CREATE,
                 [],
                 new Request(),
-                ['dev'],
-                ['dev'],
+                [],
+                [],
                 [],
                 [],
                 [$package],

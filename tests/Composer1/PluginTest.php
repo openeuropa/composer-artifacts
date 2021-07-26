@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenEuropa\ComposerArtifacts\Tests;
+namespace OpenEuropa\ComposerArtifacts\Tests\Composer1;
 
 use Composer\Composer;
 use Composer\DependencyResolver\DefaultPolicy;
@@ -14,25 +14,15 @@ use Composer\Installer\PackageEvent;
 use Composer\Plugin\PluginInterface;
 use Composer\Repository\CompositeRepository;
 use OpenEuropa\ComposerArtifacts\Plugin;
+use OpenEuropa\ComposerArtifacts\Tests\PluginTestBase;
 
 /**
- * Class PluginComposer1Test for Composer 1.
+ * Class PluginTest for Composer 1.
  *
  * @coversDefaultClass \OpenEuropa\ComposerArtifacts\Plugin
  */
-class PluginComposer1Test extends PluginTestBase
+class PluginTest extends PluginTestBase
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp()
-    {
-        if (!version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
-            $this->markTestSkipped('Test has not to be run on Composer 2.');
-        }
-        parent::setUp();
-    }
-
     /**
      * Test prePackageInstall.
      *
