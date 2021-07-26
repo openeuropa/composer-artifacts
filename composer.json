@@ -12,11 +12,11 @@
     "require-dev": {
         "composer/composer": "~1.6 || ~2.0",
         "cweagans/composer-patches": "^1.6",
-        "phpunit/phpunit": "^7.5",
-        "symfony/yaml": "~3.4"
+        "openeuropa/code-review": "2.x-dev",
+        "phpunit/phpunit": "^7.5"
     },
     "_readme": [
-        "phpro/grumphp 0.17.2 requires composer-plugin-api v1, that conflicts with Composer 2"
+        "openeuropa/code-review v2 is used because phpro/grumphp 0.17.2 in the openeuropa/code-review v1 requires composer-plugin-api v1, that conflicts with Composer 2."
     ],
     "autoload": {
         "psr-4": {

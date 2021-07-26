@@ -37,10 +37,6 @@ class PluginTest extends PluginTestBase
      */
     public function testPrePackageInstall($input, $output)
     {
-        if (!version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
-            // Do not run test on Composer 2.
-            return;
-        }
         /** @var $event \Composer\Installer\PackageEvent */
         /** @var $plugin Plugin */
         /** @var $package \Composer\Package\Package */
@@ -67,10 +63,6 @@ class PluginTest extends PluginTestBase
      */
     public function testPrePackageUpdate($input, $output)
     {
-        if (!version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
-            // Do not run test on Composer 2.
-            return;
-        }
         /** @var $event \Composer\Installer\PackageEvent */
         /** @var $plugin Plugin */
         /** @var $package \Composer\Package\Package */
