@@ -118,21 +118,28 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         /** @var Package $package */
         $package = $operation->getTargetPackage();
-        $this->installPackage($package);
+        $this->installPackage($package, true);
     }
 
     /**
      * Installs package if it is defined in the "artifacts" configuration.
      *
      * @param \Composer\Package\PackageInterface $package
+     *   Package to install.
+     * @param bool $update
+     *   Set TRUE if package is updated.
      */
-    protected function installPackage(PackageInterface $package)
+    protected function installPackage(PackageInterface $package, bool $update = false)
     {
         if (\array_key_exists($package->getName(), $this->getConfig())) {
             $this->updatePackageConfiguration($package);
 
+            $message = '  - Installing <info>%s</info> with artifact from <info>%s</info>.';
+            if ($update) {
+                $message = '  - Updating <info>%s</info> with artifact from <info>%s</info>.';
+            }
             $this->io->write(\sprintf(
-                '  - Installing <info>%s</info> with artifact from <info>%s</info>.',
+                $message,
                 $package->getName(),
                 $package->getDistUrl()
             ));
