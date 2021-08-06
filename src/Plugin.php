@@ -8,6 +8,7 @@ use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
 use Composer\Package\Package;
+use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginEvents;
 use Composer\Plugin\PluginInterface;
 use Composer\Repository\PathRepository;
@@ -82,15 +83,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $packages = $event->getPackages();
         foreach ($packages as $package) {
-            if (\array_key_exists($package->getName(), $this->getConfig())) {
-                $this->updatePackageConfiguration($package);
-
-                $this->io->write(\sprintf(
-                    '  - Installing <info>%s</info> with artifact from <info>%s</info>.',
-                    $package->getName(),
-                    $package->getDistUrl()
-                ));
-            }
+            $this->installPackage($package);
         }
     }
 
@@ -108,16 +101,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         /** @var Package $package */
         $package = $operation->getPackage();
-
-        if (\array_key_exists($package->getName(), $this->getConfig())) {
-            $this->updatePackageConfiguration($package);
-
-            $this->io->write(\sprintf(
-                '  - Installing <info>%s</info> with artifact from <info>%s</info>.',
-                $package->getName(),
-                $package->getDistUrl()
-            ));
-        }
+        $this->installPackage($package);
     }
 
     /**
@@ -134,12 +118,21 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         /** @var Package $package */
         $package = $operation->getTargetPackage();
+        $this->installPackage($package);
+    }
 
+    /**
+     * Installs package if it is defined in the "artifacts" configuration.
+     *
+     * @param \Composer\Package\PackageInterface $package
+     */
+    protected function installPackage(PackageInterface $package)
+    {
         if (\array_key_exists($package->getName(), $this->getConfig())) {
             $this->updatePackageConfiguration($package);
 
             $this->io->write(\sprintf(
-                '  - Updating <info>%s</info> with artifact from <info>%s</info>.',
+                '  - Installing <info>%s</info> with artifact from <info>%s</info>.',
                 $package->getName(),
                 $package->getDistUrl()
             ));

@@ -12,7 +12,7 @@ use OpenEuropa\ComposerArtifacts\Plugin;
 use OpenEuropa\ComposerArtifacts\Tests\PluginTestBase;
 
 /**
- * Class PluginTest for Composer 2
+ * Tests that plugin works correctly with Composer 2.
  *
  * @coversDefaultClass \OpenEuropa\ComposerArtifacts\Plugin
  */

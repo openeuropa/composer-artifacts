@@ -11,13 +11,12 @@ use Composer\DependencyResolver\Request;
 use Composer\IO\NullIO;
 use Composer\Package\RootPackage;
 use Composer\Installer\PackageEvent;
-use Composer\Plugin\PluginInterface;
 use Composer\Repository\CompositeRepository;
 use OpenEuropa\ComposerArtifacts\Plugin;
 use OpenEuropa\ComposerArtifacts\Tests\PluginTestBase;
 
 /**
- * Class PluginTest for Composer 1.
+ * Tests that plugin works correctly with Composer 1.
  *
  * @coversDefaultClass \OpenEuropa\ComposerArtifacts\Plugin
  */

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class PluginTestBase.
+ * Base class for plugin tests.
  */
 abstract class PluginTestBase extends TestCase
 {
