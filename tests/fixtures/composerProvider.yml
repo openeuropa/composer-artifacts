@@ -7,8 +7,8 @@
       },
       "repositories": [
         {"packagist.org": false},
-        { "type": "path", "url": "../repositories/update/*" },
-        { "type": "path", "url": "../repositories/install/*" }
+        { "type": "path", "url": "../repositories/install/*" },
+        { "type": "path", "url": "../repositories/update/*" }
       ],
       "extra": {
         "artifacts": {
