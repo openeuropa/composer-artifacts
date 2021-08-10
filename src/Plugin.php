@@ -7,7 +7,6 @@ use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
 use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
-use Composer\Package\Package;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginEvents;
 use Composer\Plugin\PluginInterface;
@@ -99,7 +98,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         /** @var \Composer\DependencyResolver\Operation\InstallOperation $operation */
         $operation = $event->getOperation();
 
-        /** @var Package $package */
         $package = $operation->getPackage();
         $this->installPackage($package);
     }
@@ -116,7 +114,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         /** @var \Composer\DependencyResolver\Operation\UpdateOperation $operation */
         $operation = $event->getOperation();
 
-        /** @var Package $package */
         $package = $operation->getTargetPackage();
         $this->installPackage($package, true);
     }
@@ -149,13 +146,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Custom callback that returns tokens from the package.
      *
-     * @param \Composer\Package\Package $package
+     * @param \Composer\Package\PackageInterface $package
      *   The package.
      *
      * @return string[]
      *   An array of tokens and values.
      */
-    private function getPluginTokens(Package $package)
+    private function getPluginTokens(PackageInterface $package)
     {
         list($vendorName, $projectName) = \explode(
             '/',
@@ -178,10 +175,10 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Custom callback that update a package properties.
      *
-     * @param \Composer\Package\Package $package
+     * @param \Composer\Package\PackageInterface $package
      *   The package.
      */
-    private function updatePackageConfiguration(Package $package)
+    private function updatePackageConfiguration(PackageInterface $package)
     {
         // Disable downloading from source, to ensure the artifacts will be
         // used even if composer is invoked with the `--prefer-source` option.
