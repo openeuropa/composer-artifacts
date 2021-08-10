@@ -131,12 +131,9 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if (\array_key_exists($package->getName(), $this->getConfig())) {
             $this->updatePackageConfiguration($package);
 
-            $message = '  - Installing <info>%s</info> with artifact from <info>%s</info>.';
-            if ($update) {
-                $message = '  - Updating <info>%s</info> with artifact from <info>%s</info>.';
-            }
             $this->io->write(\sprintf(
-                $message,
+                '  - %s <info>%s</info> with artifact from <info>%s</info>.',
+                $update ? 'Updating' : 'Installing',
                 $package->getName(),
                 $package->getDistUrl()
             ));
