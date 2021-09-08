@@ -39,6 +39,7 @@ pipeline:
     volumes:
     - /cache:/cache
     commands:
+    - composer self-update --2
     - composer install --ansi --no-suggest --no-progress
     when:
       matrix:
@@ -50,15 +51,26 @@ pipeline:
     commands:
     - ./vendor/bin/grumphp run
 
-  phpunit:
+  phpunit-lowest:
     group: test
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
     commands:
-    - ./vendor/bin/phpunit
+    - ./vendor/bin/phpunit --testsuite composer1
+    when:
+      matrix:
+        COMPOSER_BOUNDARY: lowest
+
+  phpunit-highest:
+    group: test
+    image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
+    commands:
+      - ./vendor/bin/phpunit --testsuite composer2
+    when:
+      matrix:
+        COMPOSER_BOUNDARY: highest
 
 matrix:
   PHP_VERSION:
-    - 7.2
     - 7.3
   COMPOSER_BOUNDARY:
     - lowest

@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenEuropa\ComposerArtifacts\Tests;
+namespace OpenEuropa\ComposerArtifacts\Tests\Composer1;
 
 use Composer\Composer;
 use Composer\DependencyResolver\DefaultPolicy;
@@ -13,42 +13,19 @@ use Composer\Package\RootPackage;
 use Composer\Installer\PackageEvent;
 use Composer\Repository\CompositeRepository;
 use OpenEuropa\ComposerArtifacts\Plugin;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Yaml\Yaml;
+use OpenEuropa\ComposerArtifacts\Tests\PluginTestBase;
 
 /**
- * Class PluginTest
+ * Tests that plugin works correctly with Composer 1.
+ *
+ * @coversDefaultClass \OpenEuropa\ComposerArtifacts\Plugin
  */
-class PluginTest extends TestCase
+class PluginTest extends PluginTestBase
 {
     /**
-     * Test Activate.
-     *
-     * @dataProvider packageProvider
-     *
-     * @param array $input
-     *   The input data.
-     * @param array $output
-     *   The output data.
-     */
-    public function testActivate($input, $output)
-    {
-        $package = new RootPackage($input['name'], $input['version'], $input['prettyVersion']);
-        $package->setExtra($input['extra']);
-        $io = new NullIO();
-        $composer = new Composer();
-        $composer->setPackage($package);
-
-        $plugin = new Plugin();
-        $plugin->activate($composer, $io);
-
-        $configKeys = array_keys($plugin->getConfig());
-
-        $this->assertEquals(array_map('strtolower', $configKeys), $configKeys);
-    }
-
-    /**
      * Test prePackageInstall.
+     *
+     * @covers ::prePackageInstall
      *
      * @dataProvider packageProvider
      *
@@ -74,6 +51,8 @@ class PluginTest extends TestCase
     /**
      * Test prePackageUpdate.
      *
+     * @covers ::prePackageUpdate
+     *
      * @dataProvider packageProvider
      *
      * @param array $input
@@ -95,16 +74,6 @@ class PluginTest extends TestCase
         foreach ($output as $key => $value) {
             $this->assertEquals($value, call_user_func([$package, $key]));
         }
-    }
-
-    /**
-     * PHPUnit provider.
-     *
-     * @return mixed[]
-     */
-    public function packageProvider()
-    {
-        return Yaml::parseFile(__DIR__ . '/fixtures/packageProvider.yml');
     }
 
     /**

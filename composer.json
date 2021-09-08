@@ -6,16 +6,18 @@
     "type": "composer-plugin",
     "prefer-stable": true,
     "require": {
-        "composer-plugin-api": "^1.1",
+        "composer-plugin-api": "^1.1 || ^2.0",
         "php": ">=7.2"
     },
     "require-dev": {
-        "composer/composer": "~1.6",
+        "composer/composer": "~1.6 || ~2.0",
         "cweagans/composer-patches": "^1.6",
-        "openeuropa/code-review": "~1.5",
-        "phpunit/phpunit": "^7.5",
-        "symfony/yaml": "~3.4"
+        "openeuropa/code-review": "2.x-dev",
+        "phpunit/phpunit": "^7.5"
     },
+    "_readme": [
+        "openeuropa/code-review v2 is used because phpro/grumphp 0.17.2 in the openeuropa/code-review v1 requires composer-plugin-api v1, that conflicts with Composer 2."
+    ],
     "autoload": {
         "psr-4": {
             "OpenEuropa\\ComposerArtifacts\\": "./src/"
