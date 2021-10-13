@@ -27,16 +27,16 @@ Edit the composer.json file and add the following in your `extra` section:
 
 ```json
 {
-    "extra": {
-        "artifacts": {
-            "foo/bar": {
-              "dist": {
-                "url": "https://github.com/{name}/releases/download/{version}/{project-name}-{version}.tar.gz",
-                "type": "tar"
-              }
-            }
+  "extra": {
+    "artifacts": {
+      "foo/bar": {
+        "dist": {
+          "url": "https://github.com/{name}/releases/download/{version}/{project-name}-{version}.tar.gz",
+          "type": "tar"
         }
+      }
     }
+  }
 }
 ```
 
