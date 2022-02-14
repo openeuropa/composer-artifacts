@@ -5,7 +5,6 @@ namespace OpenEuropa\ComposerArtifacts;
 use Composer\Composer;
 use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\Installer\PackageEvent;
-use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginEvents;
@@ -21,7 +20,7 @@ use Composer\Plugin\PrePoolCreateEvent;
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
     /**
-     * Holds the artifacts configuration.
+     * Holds the artifacts' configuration.
      *
      * @var string[]
      */
@@ -59,13 +58,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
-            // Events for Composer 1.
-            return [
-                PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
-                PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
-            ];
-        }
         // Events for Composer 2.
         return [
             PluginEvents::PRE_POOL_CREATE => 'prePoolCreate',

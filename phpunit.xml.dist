@@ -5,10 +5,6 @@
     <ini name="memory_limit" value="-1"/>
   </php>
   <testsuites>
-    <testsuite name="composer1">
-      <file>./tests/PluginIntegrationTest.php</file>
-      <directory>./tests/Composer1/</directory>
-    </testsuite>
     <testsuite name="composer2">
       <file>./tests/PluginIntegrationTest.php</file>
       <directory>./tests/Composer2/</directory>

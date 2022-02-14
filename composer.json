@@ -4,20 +4,18 @@
     "keywords": ["composer-plugin", "artifacts"],
     "license": "EUPL-1.2",
     "type": "composer-plugin",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "composer-plugin-api": "^1.1 || ^2.0",
-        "php": ">=7.2"
+        "composer-plugin-api": "^2.0",
+        "php": ">=7.4"
     },
     "require-dev": {
-        "composer/composer": "~1.6 || ~2.0",
-        "cweagans/composer-patches": "^1.6",
-        "openeuropa/code-review": "2.x-dev",
-        "phpunit/phpunit": "^7.5"
+        "composer/composer": "^2.0",
+        "cweagans/composer-patches": "^1.7",
+        "openeuropa/code-review": "^2.0",
+        "phpspec/prophecy-phpunit": "^2"
     },
-    "_readme": [
-        "openeuropa/code-review v2 is used because phpro/grumphp 0.17.2 in the openeuropa/code-review v1 requires composer-plugin-api v1, that conflicts with Composer 2."
-    ],
     "autoload": {
         "psr-4": {
             "OpenEuropa\\ComposerArtifacts\\": "./src/"
@@ -34,6 +32,11 @@
         "composer-exit-on-patch-failure": true
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "cweagans/composer-patches": true,
+            "phpro/grumphp": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }
