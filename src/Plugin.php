@@ -68,6 +68,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         }
         // Events for Composer 2.
         return [
+            PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
+            PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
             PluginEvents::PRE_POOL_CREATE => 'prePoolCreate',
         ];
     }
