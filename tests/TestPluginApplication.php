@@ -39,7 +39,7 @@ class TestPluginApplication extends Application
     /**
      * {@inheritdoc}
      */
-    public function getComposer($required = true, $disablePlugins = null)
+    public function getComposer($required = true, $disablePlugins = null, $disableScripts = null)
     {
         $composer = parent::getComposer($required, $disablePlugins);
         $composer->getPluginManager()->addPlugin(new Plugin());

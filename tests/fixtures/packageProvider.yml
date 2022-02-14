@@ -1,8 +1,8 @@
 -
   input:
     name: test/test
-    version: 1.0.0
-    prettyVersion: 1.0.0
+    version: 2.0.0
+    prettyVersion: 2.0.0
     extra:
       artifacts:
        "test/test":
@@ -10,15 +10,15 @@
            url: "{version}.tar.gz"
            type: tar
   output:
-    getDistUrl: "1.0.0.tar.gz"
+    getDistUrl: "2.0.0.tar.gz"
     getDistType: "tar"
     getSourceType: ""
 
 -
   input:
     name: test/test
-    version: 1.0.0
-    prettyVersion: 1.0.0
+    version: 2.0.0
+    prettyVersion: 2.0.0
     extra:
       artifacts:
        "TEST/TEST":
@@ -26,15 +26,15 @@
            url: "{version}.tar.gz"
            type: tar
   output:
-    getDistUrl: "1.0.0.tar.gz"
+    getDistUrl: "2.0.0.tar.gz"
     getDistType: "tar"
     getSourceType: ""
 
 -
   input:
     name: test/test
-    version: 1.0.0
-    prettyVersion: 1.0.0
+    version: 2.0.0
+    prettyVersion: 2.0.0
     extra:
       artifacts:
        "test/TEST":
@@ -42,15 +42,15 @@
            url: "{name}-{version}.tar.gz"
            type: tar
   output:
-    getDistUrl: "test/test-1.0.0.tar.gz"
+    getDistUrl: "test/test-2.0.0.tar.gz"
     getDistType: "tar"
     getSourceType: ""
 
 -
   input:
     name: TEST/test
-    version: 1.0.0
-    prettyVersion: 1.0.0
+    version: 2.0.0
+    prettyVersion: 2.0.0
     extra:
       artifacts:
        "test/TEST":
@@ -58,15 +58,15 @@
            url: "{name}-{version}.tar.gz"
            type: tar
   output:
-    getDistUrl: "test/test-1.0.0.tar.gz"
+    getDistUrl: "test/test-2.0.0.tar.gz"
     getDistType: "tar"
     getSourceType: ""
 
 -
   input:
     name: my-vendor/my-project
-    version: 1.0.0
-    prettyVersion: 1.0.0
+    version: 2.0.0
+    prettyVersion: 2.0.0
     extra:
       artifacts:
        "my-vendor/my-project":
@@ -81,8 +81,8 @@
 -
   input:
     name: test/test
-    version: 1.0.0
-    prettyVersion: 1.0.0
+    version: 2.0.0
+    prettyVersion: 2.0.0
     extra:
       artifacts:
        "izumi/nakano":
@@ -97,8 +97,8 @@
 -
   input:
     name: test/test
-    version: 1.0.0
-    prettyVersion: 1.0.0
+    version: 2.0.0
+    prettyVersion: 2.0.0
     extra:
       artifacts:
        "test/test":
@@ -106,6 +106,6 @@
            url: "{name}-{version}-{non-existent}-{tokens}.zip"
            type: zip
   output:
-    getDistUrl: "test/test-1.0.0-{non-existent}-{tokens}.zip"
+    getDistUrl: "test/test-2.0.0-{non-existent}-{tokens}.zip"
     getDistType: "zip"
     getSourceType: ""

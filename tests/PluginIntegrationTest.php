@@ -14,7 +14,7 @@ class PluginIntegrationTest extends TestCase
     /**
      * @beforeClass
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $fs = new Filesystem();
         $fs->mkdir(__DIR__ . '/fixtures/main');
@@ -32,7 +32,7 @@ class PluginIntegrationTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $fs = new Filesystem();
         $fs->remove(glob($this->path('/main/*')));
@@ -84,7 +84,7 @@ class PluginIntegrationTest extends TestCase
             $this->assertFileExists($this->path($file));
         }
         foreach ($assert['non-existing'] as $file) {
-            $this->assertFileNotExists($this->path($file));
+            $this->assertFileDoesNotExist($this->path($file));
         }
         foreach ($assert['show'] as $show) {
             $this->assertContains($show, $output);

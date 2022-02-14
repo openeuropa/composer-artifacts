@@ -3,7 +3,7 @@
     {
       "name": "openeuropa/main",
       "require": {
-        "openeuropa/dependency-1": "1.0.0"
+        "openeuropa/dependency-1": "2.0.0"
       },
       "repositories": [
         {"packagist.org": false},
@@ -27,21 +27,21 @@
   command: 'install'
   assert:
     show:
-    - 'openeuropa/dependency-1 1.0.0'
-    - 'openeuropa/dependency-2 1.0.0'
+    - 'openeuropa/dependency-1 2.0.0'
+    - 'openeuropa/dependency-2 2.0.0'
     existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.0.0.txt
+    - /main/vendor/openeuropa/dependency-1/artifact-version-2.0.0.txt
     - /main/vendor/openeuropa/dependency-1/composer.json
     - /main/vendor/openeuropa/dependency-2/composer.json
     non-existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.1.0.txt
+    - /main/vendor/openeuropa/dependency-1/artifact-version-2.1.0.txt
 
 -
   composer: |
     {
       "name": "openeuropa/main",
       "require": {
-        "openeuropa/dependency-1": "^1.0"
+        "openeuropa/dependency-1": "^2.0"
       },
       "repositories": [
         {"packagist.org": false},
@@ -64,15 +64,15 @@
   command: 'install'
   assert:
     show:
-    - 'openeuropa/dependency-1 1.1.0'
+    - 'openeuropa/dependency-1 2.1.0'
     non-show:
-    - 'openeuropa/dependency-1 1.0.0'
-    - 'openeuropa/dependency-2 1.0.0'
+    - 'openeuropa/dependency-1 2.0.0'
+    - 'openeuropa/dependency-2 2.0.0'
     existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.1.0.txt
+    - /main/vendor/openeuropa/dependency-1/artifact-version-2.1.0.txt
     - /main/vendor/openeuropa/dependency-1/composer.json
     non-existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.0.0.txt
+    - /main/vendor/openeuropa/dependency-1/artifact-version-2.0.0.txt
     - /main/vendor/openeuropa/dependency-2/composer.json
 
 -
@@ -80,7 +80,7 @@
     {
       "name": "openeuropa/main",
       "require": {
-        "openeuropa/dependency-1": "1.0.0"
+        "openeuropa/dependency-1": "2.0.0"
       },
       "repositories": [
         {"packagist.org": false},
@@ -103,26 +103,26 @@
     }
   command:
   - 'install'
-  - 'require openeuropa/dependency-1:^1.0'
+  - 'require openeuropa/dependency-1:^2.0'
   - 'update'
   assert:
     show:
-    - 'openeuropa/dependency-1 1.1.0'
+    - 'openeuropa/dependency-1 2.1.0'
     non-show:
-    - 'openeuropa/dependency-1 1.0.0'
-    - 'openeuropa/dependency-2 1.0.0'
+    - 'openeuropa/dependency-1 2.0.0'
+    - 'openeuropa/dependency-2 2.0.0'
     existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.1.0.txt
+    - /main/vendor/openeuropa/dependency-1/artifact-version-2.1.0.txt
     - /main/vendor/openeuropa/dependency-1/composer.json
     non-existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.0.0.txt
+    - /main/vendor/openeuropa/dependency-1/artifact-version-2.0.0.txt
 
 -
   composer: |
     {
       "name": "openeuropa/main",
       "require": {
-        "openeuropa/dependency-1": "^1.0"
+        "openeuropa/dependency-1": "^2.0"
       },
       "repositories": [
         {"packagist.org": false},
@@ -148,11 +148,11 @@
   - 'remove openeuropa/dependency-1'
   assert:
     non-show:
-    - 'openeuropa/dependency-1 1.0.0'
-    - 'openeuropa/dependency-1 1.1.0'
-    - 'openeuropa/dependency-2 1.0.0'
+    - 'openeuropa/dependency-1 2.0.0'
+    - 'openeuropa/dependency-1 2.1.0'
+    - 'openeuropa/dependency-2 2.0.0'
     non-existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.0.0.txt
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.1.0.txt
+    - /main/vendor/openeuropa/dependency-1/artifact-version-2.0.0.txt
+    - /main/vendor/openeuropa/dependency-1/artifact-version-2.1.0.txt
     - /main/vendor/openeuropa/dependency-1/composer.json
     - /main/vendor/openeuropa/dependency-2/composer.json
