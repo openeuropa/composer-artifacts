@@ -9,3 +9,6 @@ parameters:
   tasks.phpmd.exclude:
     - vendor/
     - tests/fixtures/
+grumphp:
+    git_hook_variables:
+        EXEC_GRUMPHP_COMMAND: 'docker-compose exec -T web'
