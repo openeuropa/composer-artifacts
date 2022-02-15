@@ -23,10 +23,8 @@ abstract class PluginTestBase extends TestCase
      *
      * @param array $input
      *   The input data.
-     * @param array $output
-     *   The output data.
      */
-    public function testActivate($input, $output)
+    public function testActivate(array $input)
     {
         $package = new RootPackage($input['name'], $input['version'], $input['prettyVersion']);
         $package->setExtra($input['extra']);
@@ -45,9 +43,9 @@ abstract class PluginTestBase extends TestCase
     /**
      * PHPUnit provider.
      *
-     * @return mixed[]
+     * @return array
      */
-    public function packageProvider()
+    public function packageProvider(): array
     {
         return Yaml::parseFile(__DIR__ . '/fixtures/packageProvider.yml');
     }

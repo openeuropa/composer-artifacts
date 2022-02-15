@@ -7,6 +7,7 @@ use Composer\DependencyResolver\Request;
 use Composer\IO\NullIO;
 use Composer\Package\RootPackage;
 use Composer\Plugin\PluginEvents;
+use Composer\Plugin\PluginInterface;
 use Composer\Plugin\PrePoolCreateEvent;
 use OpenEuropa\ComposerArtifacts\Plugin;
 use OpenEuropa\ComposerArtifacts\Tests\PluginTestBase;
@@ -62,20 +63,23 @@ class PluginTest extends PluginTestBase
         $plugin = new Plugin();
         $plugin->activate($composer, $io);
 
-        return [
-            'event' => new PrePoolCreateEvent(
-                PluginEvents::PRE_POOL_CREATE,
-                [],
-                new Request(),
-                [],
-                [],
-                [],
-                [],
-                [$package],
-                []
-            ),
-            'plugin' => $plugin,
-            'package' => $package,
-        ];
+        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'gt')) {
+            return [
+                'event' => new PrePoolCreateEvent(
+                    PluginEvents::PRE_POOL_CREATE,
+                    [],
+                    new Request(),
+                    [],
+                    [],
+                    [],
+                    [],
+                    [$package],
+                    []
+                ),
+                'plugin' => $plugin,
+                'package' => $package,
+            ];
+        }
+        return [];
     }
 }

@@ -2,11 +2,13 @@
 
 namespace OpenEuropa\ComposerArtifacts\Tests;
 
+use Composer\Composer;
 use Composer\Console\Application;
-use Composer\IO\NullIO;
+use Composer\Package\RootPackage;
 use OpenEuropa\ComposerArtifacts\Plugin;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Wraps Console application allowing to set the test plugin at runtime.
@@ -39,11 +41,11 @@ class TestPluginApplication extends Application
     /**
      * {@inheritdoc}
      */
-    public function getComposer($required = true, $disablePlugins = null)
+    public function getComposer($required = true, $disablePlugins = null, $disableScripts = null): ?Composer
     {
+        $package = new RootPackage('openeuropa/main', '1.0.0', '1.0.0');
         $composer = parent::getComposer($required, $disablePlugins);
-        $composer->getPluginManager()->addPlugin(new Plugin());
-
+        $composer->getPluginManager()->addPlugin(new Plugin(), false, $package);
         return $composer;
     }
 
@@ -52,7 +54,7 @@ class TestPluginApplication extends Application
      *
      * @return \Symfony\Component\Console\Output\BufferedOutput
      */
-    public function getOutput()
+    public function getOutput(): BufferedOutput
     {
         return $this->output;
     }
@@ -68,7 +70,7 @@ class TestPluginApplication extends Application
     /**
      * @param string $workingDir
      */
-    public function setWorkingDir($workingDir)
+    public function setWorkingDir(string $workingDir)
     {
         $this->workingDir = $workingDir;
     }
@@ -79,7 +81,7 @@ class TestPluginApplication extends Application
      * @return int
      * @throws \Exception
      */
-    public function runCommand($input)
+    public function runCommand(string $input): int
     {
         $commandInput = new StringInput($input . ' --working-dir=' . $this->workingDir);
         $this->output = new BufferedOutput();

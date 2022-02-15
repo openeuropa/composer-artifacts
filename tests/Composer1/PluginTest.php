@@ -11,7 +11,9 @@ use Composer\DependencyResolver\Request;
 use Composer\IO\NullIO;
 use Composer\Package\RootPackage;
 use Composer\Installer\PackageEvent;
+use Composer\Plugin\PluginInterface;
 use Composer\Repository\CompositeRepository;
+use Composer\Repository\InstalledArrayRepository;
 use OpenEuropa\ComposerArtifacts\Plugin;
 use OpenEuropa\ComposerArtifacts\Tests\PluginTestBase;
 
@@ -34,7 +36,7 @@ class PluginTest extends PluginTestBase
      * @param array $output
      *   The output data.
      */
-    public function testPrePackageInstall($input, $output)
+    public function testPrePackageInstall(array $input, array $output)
     {
         /** @var $event \Composer\Installer\PackageEvent */
         /** @var $plugin Plugin */
@@ -60,7 +62,7 @@ class PluginTest extends PluginTestBase
      * @param array $output
      *   The output data.
      */
-    public function testPrePackageUpdate($input, $output)
+    public function testPrePackageUpdate(array $input, array $output)
     {
         /** @var $event \Composer\Installer\PackageEvent */
         /** @var $plugin Plugin */
@@ -77,15 +79,13 @@ class PluginTest extends PluginTestBase
     }
 
     /**
-     * @param $operationName
+     * @param string $operationName
      * @param array $input
      *   The input data.
-     * @param array $output
-     *   The output data.
      *
      * @return object[]
      */
-    private function eventPopulate($operationName, $input, $output)
+    private function eventPopulate(string $operationName, array $input)
     {
         $package = new RootPackage($input['name'], $input['version'], $input['prettyVersion']);
         $package->setExtra($input['extra']);
@@ -100,21 +100,24 @@ class PluginTest extends PluginTestBase
         new InstallOperation($package) :
         new UpdateOperation($package, $package);
 
-        return [
-            'event' => new PackageEvent(
-                'test',
-                $composer,
-                $io,
-                false,
-                new DefaultPolicy(),
-                new Pool(),
-                new CompositeRepository([]),
-                new Request(),
-                [],
-                $operation
-            ),
-            'plugin' => $plugin,
-            'package' => $package,
-        ];
+        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
+            return [
+                'event' => new PackageEvent(
+                    'test',
+                    $composer,
+                    $io,
+                    false,
+                    new DefaultPolicy(),
+                    new Pool(),
+                    new CompositeRepository([]),
+                    new Request(),
+                    [],
+                    $operation
+                ),
+                'plugin' => $plugin,
+                'package' => $package,
+            ];
+        }
+        return [];
     }
 }

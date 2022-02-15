@@ -2,9 +2,11 @@
 
 namespace OpenEuropa\ComposerArtifacts\Tests;
 
+use Composer\Plugin\PluginInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
+use PHPUnit\Runner\Version;
 
 /**
  * Integration tests.
@@ -14,7 +16,7 @@ class PluginIntegrationTest extends TestCase
     /**
      * @beforeClass
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $fs = new Filesystem();
         $fs->mkdir(__DIR__ . '/fixtures/main');
@@ -32,7 +34,7 @@ class PluginIntegrationTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $fs = new Filesystem();
         $fs->remove(glob($this->path('/main/*')));
@@ -55,7 +57,7 @@ class PluginIntegrationTest extends TestCase
      *
      * @dataProvider composerDataProvider
      */
-    public function testComposerCommands($composer, $commands, array $assert = array())
+    public function testComposerCommands(string $composer, $commands, array $assert = array())
     {
         $assert += [
             'show' => [],
@@ -84,20 +86,24 @@ class PluginIntegrationTest extends TestCase
             $this->assertFileExists($this->path($file));
         }
         foreach ($assert['non-existing'] as $file) {
-            $this->assertFileNotExists($this->path($file));
+            if (version_compare(Version::id(), '9.5', 'lt')) {
+                $this->assertFileNotExists($this->path($file));
+            } else {
+                $this->assertFileDoesNotExist($this->path($file));
+            }
         }
         foreach ($assert['show'] as $show) {
-            $this->assertContains($show, $output);
+            $this->assertStringContainsString($show, $output);
         }
         foreach ($assert['non-show'] as $nonshow) {
-            $this->assertNotContains($nonshow, $output);
+            $this->assertStringNotContainsString($nonshow, $output);
         }
     }
 
     /**
      * @return array
      */
-    public function composerDataProvider()
+    public function composerDataProvider(): array
     {
         return Yaml::parseFile($this->path('/composerProvider.yml'));
     }
@@ -111,7 +117,7 @@ class PluginIntegrationTest extends TestCase
      * @return string
      *      Full given fixture path.
      */
-    private function path($path)
+    private function path(string $path)
     {
         return __DIR__ . '/fixtures' . $path;
     }
@@ -124,7 +130,7 @@ class PluginIntegrationTest extends TestCase
      * @param $content
      *      Content of composer.json
      */
-    private function writeComposerJson($path, $content)
+    private function writeComposerJson(string $path, $content)
     {
         $replace = [
             'file:///artifacts' => 'file://' . $this->path('/artifacts'),
