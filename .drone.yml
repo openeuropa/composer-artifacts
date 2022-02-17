@@ -26,7 +26,6 @@ pipeline:
     volumes:
     - /cache:/cache
     commands:
-    - composer install --ansi --no-progress
     - composer update --prefer-lowest --ansi --no-progress
     when:
       matrix:
