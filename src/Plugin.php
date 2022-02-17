@@ -10,6 +10,8 @@ use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginEvents;
 use Composer\Plugin\PluginInterface;
+use Composer\Plugin\PostFileDownloadEvent;
+use Composer\Plugin\PreFileDownloadEvent;
 use Composer\Repository\PathRepository;
 use Composer\Plugin\PrePoolCreateEvent;
 
@@ -35,6 +37,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private $io;
 
     /**
+     * The url of the changed artifacts
+     *
+     * @var array
+     */
+    protected $changedArtifactsUrls;
+
+    /**
      * Get the configuration.
      *
      * @return array
@@ -52,6 +61,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $this->io = $io;
         $extra = $composer->getPackage()->getExtra() + ['artifacts' => []];
         $this->config = $this->ensureLowerCaseKeys($extra['artifacts']);
+        $this->changedArtifactsUrls = [];
     }
 
     /**
@@ -67,10 +77,13 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             ];
         }
         // Events for Composer 2.
+        // The change in architecture in composer2 makes all packages to be downloaded
+        // before they are installed, changing the way the plugin can kick in.
+        // The plugin acts though when the packages are being downloaded.
         return [
-            PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
-            PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
             PluginEvents::PRE_POOL_CREATE => 'prePoolCreate',
+            PluginEvents::PRE_FILE_DOWNLOAD => 'preFileDownload',
+            PluginEvents::POST_FILE_DOWNLOAD => 'postFileDownload',
         ];
     }
 
@@ -86,6 +99,55 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         foreach ($packages as $package) {
             $this->installPackage($package);
         }
+    }
+
+    /**
+     * Custom event handler to download artifacts.
+     *
+     * @param \Composer\Plugin\PostFileDownloadEvent $preFileDownloadEvent
+     *   The event.
+     */
+    public function postFileDownload(PostFileDownloadEvent $postFileDownloadEvent)
+    {
+        $url = $postFileDownloadEvent->getUrl();
+        $url_extension = ($this->getExtension($url));
+        $local_extension = $this->getExtension($postFileDownloadEvent->getFileName());
+
+        // Copy file due to a difference on how the original file is handled from the lock.
+        if (in_array($url, $this->changedArtifactsUrls) && $url_extension !== $local_extension) {
+            copy($postFileDownloadEvent->getFileName(), $postFileDownloadEvent->getFileName() . '.' . $url_extension);
+        }
+    }
+
+    /**
+     * Custom event handler to change configuration for artifacts.
+     *
+     * @param \Composer\Plugin\PreFileDownloadEvent $preFileDownloadEvent
+     *   The event.
+     */
+    public function preFileDownload(PreFileDownloadEvent $preFileDownloadEvent)
+    {
+        /** @var PackageInterface $package */
+        $package = $preFileDownloadEvent->getContext();
+        if (\array_key_exists($package->getName(), $this->getConfig())) {
+            $this->updatePackageConfiguration($package);
+            $preFileDownloadEvent->setProcessedUrl($package->getDistUrl());
+            $this->changedArtifactsUrls[] = $package->getDistUrl();
+        }
+    }
+
+    /**
+     * Get extension from file path.
+     *
+     * @param $filepath
+     *   The file path.
+     *
+     * @return string
+     *   The extension from file path.
+     */
+    protected function getExtension($filename) : string
+    {
+        return pathinfo(parse_url($filename, PHP_URL_PATH), PATHINFO_EXTENSION);
     }
 
     /**
