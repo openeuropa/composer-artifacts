@@ -14,6 +14,7 @@ use Composer\Plugin\PostFileDownloadEvent;
 use Composer\Plugin\PreFileDownloadEvent;
 use Composer\Repository\PathRepository;
 use Composer\Plugin\PrePoolCreateEvent;
+use Composer\Script\ScriptEvents;
 
 /**
  * Class Plugin
@@ -37,13 +38,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     private $io;
 
     /**
-     * The url of the changed artifacts
-     *
-     * @var array
-     */
-    protected $changedArtifactsUrls;
-
-    /**
      * Get the configuration.
      *
      * @return array
@@ -61,7 +55,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         $this->io = $io;
         $extra = $composer->getPackage()->getExtra() + ['artifacts' => []];
         $this->config = $this->ensureLowerCaseKeys($extra['artifacts']);
-        $this->changedArtifactsUrls = [];
     }
 
     /**
@@ -81,58 +74,22 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         // before they are installed, changing the way the plugin can kick in.
         // The plugin acts though when the packages are being downloaded.
         return [
-            PluginEvents::PRE_POOL_CREATE => 'prePoolCreate',
             PluginEvents::PRE_FILE_DOWNLOAD => 'preFileDownload',
-            PluginEvents::POST_FILE_DOWNLOAD => 'postFileDownload',
         ];
-    }
-
-    /**
-     * Custom pre-pool-create event callback that update the package properties.
-     *
-     * @param \Composer\Plugin\PrePoolCreateEvent $event
-     *   The event.
-     */
-    public function prePoolCreate(PrePoolCreateEvent $event)
-    {
-        $packages = $event->getPackages();
-        foreach ($packages as $package) {
-            $this->installPackage($package);
-        }
-    }
-
-    /**
-     * Custom event handler to download artifacts.
-     *
-     * @param \Composer\Plugin\PostFileDownloadEvent $preFileDownloadEvent
-     *   The event.
-     */
-    public function postFileDownload(PostFileDownloadEvent $postFileDownloadEvent)
-    {
-        $url = $postFileDownloadEvent->getUrl();
-        $url_extension = ($this->getExtension($url));
-        $local_extension = $this->getExtension($postFileDownloadEvent->getFileName());
-
-        // Copy file due to a difference on how the original file is handled from the lock.
-        if (in_array($url, $this->changedArtifactsUrls) && $url_extension !== $local_extension) {
-            copy($postFileDownloadEvent->getFileName(), $postFileDownloadEvent->getFileName() . '.' . $url_extension);
-        }
     }
 
     /**
      * Custom event handler to change configuration for artifacts.
      *
-     * @param \Composer\Plugin\PreFileDownloadEvent $preFileDownloadEvent
+     * @param \Composer\Plugin\PreFileDownloadEvent $event
      *   The event.
      */
-    public function preFileDownload(PreFileDownloadEvent $preFileDownloadEvent)
+    public function preFileDownload(PreFileDownloadEvent $event)
     {
-        /** @var PackageInterface $package */
-        $package = $preFileDownloadEvent->getContext();
-        if (\array_key_exists($package->getName(), $this->getConfig())) {
-            $this->updatePackageConfiguration($package);
-            $preFileDownloadEvent->setProcessedUrl($package->getDistUrl());
-            $this->changedArtifactsUrls[] = $package->getDistUrl();
+        $package = $event->getContext();
+        if ($package instanceof PackageInterface && \array_key_exists($package->getName(), $this->getConfig())) {
+            $event->setProcessedUrl($this->getPackageDistUrl($package));
+            $package->setDistType($this->getPackageDistType($package));
         }
     }
 
@@ -194,6 +151,8 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         if (\array_key_exists($package->getName(), $this->getConfig())) {
             $this->updatePackageConfiguration($package);
+            $package->setDistUrl($this->getPackageDistUrl($package));
+            $package->setDistType($this->getPackageDistType($package));
 
             $this->io->write(\sprintf(
                 '  - %s <info>%s</info> with artifact from <info>%s</info>.',
@@ -215,7 +174,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     private function getPluginTokens(PackageInterface $package)
     {
-        list($vendorName, $projectName) = \explode(
+        [$vendorName, $projectName] = \explode(
             '/',
             $package->getPrettyName(),
             2
@@ -245,22 +204,41 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         // used even if composer is invoked with the `--prefer-source` option.
         $package->setSourceType(null);
 
-        $tokens = $this->getPluginTokens($package);
-        $package_config = $this->getConfig()[$package->getName()];
-
         // The path repository sets some path-related options like "relative"
         // which are meaningful only in that specific context. When changing
         // the repository type, these options are carried over as transport options,
         // which causes errors with downloaders that use remote file systems.
         // Remove said option when the repository type is changed.
+        $package_config = $this->getConfig()[$package->getName()];
         if ($package->getRepository() instanceof PathRepository && $package_config['dist']['type'] !== 'path') {
             $transportOptions = $package->getTransportOptions();
             unset($transportOptions['relative']);
             $package->setTransportOptions($transportOptions);
         }
+    }
 
-        $package->setDistUrl(strtr($package_config['dist']['url'], $tokens));
-        $package->setDistType(strtr($package_config['dist']['type'], $tokens));
+    /**
+     * @param \Composer\Package\PackageInterface $package
+     *
+     * @return string
+     */
+    private function getPackageDistUrl(PackageInterface $package)
+    {
+        $tokens = $this->getPluginTokens($package);
+        $package_config = $this->getConfig()[$package->getName()];
+        return strtr($package_config['dist']['url'], $tokens);
+    }
+
+    /**
+     * @param \Composer\Package\PackageInterface $package
+     *
+     * @return string
+     */
+    private function getPackageDistType(PackageInterface $package)
+    {
+        $tokens = $this->getPluginTokens($package);
+        $package_config = $this->getConfig()[$package->getName()];
+        return strtr($package_config['dist']['type'], $tokens);
     }
 
     /**
