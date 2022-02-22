@@ -39,7 +39,7 @@
       artifacts:
        "test/TEST":
          dist:
-           url: "{name}-{version}.tar.gz"
+           url: "{pretty-name}-{version}.tar.gz"
            type: tar
   output:
     getDistUrl: "test/test-1.0.0.tar.gz"
@@ -55,7 +55,7 @@
       artifacts:
        "test/TEST":
          dist:
-           url: "{name}-{version}.tar.gz"
+           url: "{pretty-name}-{version}.tar.gz"
            type: tar
   output:
     getDistUrl: "test/test-1.0.0.tar.gz"
@@ -87,7 +87,7 @@
       artifacts:
        "izumi/nakano":
          dist:
-           url: "{name}-{version}.tar.gz"
+           url: "{pretty-name}-{version}.tar.gz"
            type: tar
   output:
     getDistUrl: null
@@ -103,7 +103,7 @@
       artifacts:
        "test/test":
          dist:
-           url: "{name}-{version}-{non-existent}-{tokens}.zip"
+           url: "{pretty-name}-{version}-{non-existent}-{tokens}.zip"
            type: zip
   output:
     getDistUrl: "test/test-1.0.0-{non-existent}-{tokens}.zip"

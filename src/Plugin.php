@@ -186,6 +186,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             '{pretty-version}' => $package->getPrettyVersion(),
             '{version}' => $package->getVersion(),
             '{name}' => $package->getName(),
+            '{pretty-name}' => $package->getName(),
             '{stability}' => $package->getStability(),
             '{type}' => $package->getType(),
             '{checksum}' => $package->getDistSha1Checksum(),
