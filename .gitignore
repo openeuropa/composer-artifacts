@@ -6,3 +6,4 @@ vendor
 phpunit.xml
 tests/fixtures/main/composer.json
 docker-compose.*.yml
+.phpunit.result.cache

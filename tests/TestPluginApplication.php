@@ -44,7 +44,7 @@ class TestPluginApplication extends Application
     public function getComposer($required = true, $disablePlugins = null, $disableScripts = null): ?Composer
     {
         $package = new RootPackage('openeuropa/main', '1.0.0', '1.0.0');
-        $composer = parent::getComposer($required, $disablePlugins);
+        $composer = parent::getComposer($required, $disablePlugins, $disableScripts);
         $composer->getPluginManager()->addPlugin(new Plugin(), false, $package);
         return $composer;
     }
