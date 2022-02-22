@@ -17,14 +17,14 @@ use Composer\Plugin\PrePoolCreateEvent;
 use Composer\Script\ScriptEvents;
 
 /**
- * Class Plugin
+ * Composer artifacts plugin.
  *
  * @SuppressWarnings(PHPMD.ShortVariable)
  */
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
     /**
-     * Holds the artifacts configuration.
+     * Artifacts configuration.
      *
      * @var string[]
      */
@@ -62,17 +62,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
-            // Events for Composer 1.
-            return [
-                PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
-                PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
-            ];
-        }
-        // Events for Composer 2.
-        // The change in architecture in composer2 makes all packages to be downloaded
-        // before they are installed, changing the way the plugin can kick in.
-        // The plugin acts though when the packages are being downloaded.
         return [
             PluginEvents::PRE_FILE_DOWNLOAD => 'preFileDownload',
         ];
@@ -90,76 +79,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         if ($package instanceof PackageInterface && \array_key_exists($package->getName(), $this->getConfig())) {
             $event->setProcessedUrl($this->getPackageDistUrl($package));
             $package->setDistType($this->getPackageDistType($package));
-        }
-    }
-
-    /**
-     * Get extension from file path.
-     *
-     * @param $filepath
-     *   The file path.
-     *
-     * @return string
-     *   The extension from file path.
-     */
-    protected function getExtension($filename) : string
-    {
-        return pathinfo(parse_url($filename, PHP_URL_PATH), PATHINFO_EXTENSION);
-    }
-
-    /**
-     * Custom pre-package install event callback that update the package
-     * properties upon 'composer install' command.
-     *
-     * @param \Composer\Installer\PackageEvent $event
-     *   The event.
-     */
-    public function prePackageInstall(PackageEvent $event)
-    {
-        /** @var \Composer\DependencyResolver\Operation\InstallOperation $operation */
-        $operation = $event->getOperation();
-
-        $package = $operation->getPackage();
-        $this->installPackage($package);
-    }
-
-    /**
-     * Custom pre-package update event callback that update the package
-     * properties upon 'composer update' command.
-     *
-     * @param \Composer\Installer\PackageEvent $event
-     *   The event.
-     */
-    public function prePackageUpdate(PackageEvent $event)
-    {
-        /** @var \Composer\DependencyResolver\Operation\UpdateOperation $operation */
-        $operation = $event->getOperation();
-
-        $package = $operation->getTargetPackage();
-        $this->installPackage($package, true);
-    }
-
-    /**
-     * Installs package if it is defined in the "artifacts" configuration.
-     *
-     * @param \Composer\Package\PackageInterface $package
-     *   Package to install.
-     * @param bool $update
-     *   Set TRUE if package is updated.
-     */
-    protected function installPackage(PackageInterface $package, bool $update = false)
-    {
-        if (\array_key_exists($package->getName(), $this->getConfig())) {
-            $this->updatePackageConfiguration($package);
-            $package->setDistUrl($this->getPackageDistUrl($package));
-            $package->setDistType($this->getPackageDistType($package));
-
-            $this->io->write(\sprintf(
-                '  - %s <info>%s</info> with artifact from <info>%s</info>.',
-                $update ? 'Updating' : 'Installing',
-                $package->getName(),
-                $package->getDistUrl()
-            ));
         }
     }
 
@@ -191,31 +110,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             '{type}' => $package->getType(),
             '{checksum}' => $package->getDistSha1Checksum(),
         ];
-    }
-
-    /**
-     * Custom callback that update a package properties.
-     *
-     * @param \Composer\Package\PackageInterface $package
-     *   The package.
-     */
-    private function updatePackageConfiguration(PackageInterface $package)
-    {
-        // Disable downloading from source, to ensure the artifacts will be
-        // used even if composer is invoked with the `--prefer-source` option.
-        $package->setSourceType(null);
-
-        // The path repository sets some path-related options like "relative"
-        // which are meaningful only in that specific context. When changing
-        // the repository type, these options are carried over as transport options,
-        // which causes errors with downloaders that use remote file systems.
-        // Remove said option when the repository type is changed.
-        $package_config = $this->getConfig()[$package->getName()];
-        if ($package->getRepository() instanceof PathRepository && $package_config['dist']['type'] !== 'path') {
-            $transportOptions = $package->getTransportOptions();
-            unset($transportOptions['relative']);
-            $package->setTransportOptions($transportOptions);
-        }
     }
 
     /**

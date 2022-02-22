@@ -53,7 +53,7 @@ pipeline:
     group: test
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
     commands:
-    - ./vendor/bin/phpunit --testsuite composer1
+    - ./vendor/bin/phpunit
     when:
       matrix:
         COMPOSER_BOUNDARY: lowest
@@ -62,7 +62,7 @@ pipeline:
     group: test
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
     commands:
-      - ./vendor/bin/phpunit --testsuite composer2
+      - ./vendor/bin/phpunit
     when:
       matrix:
         COMPOSER_BOUNDARY: highest

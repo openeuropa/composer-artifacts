@@ -7,14 +7,14 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "composer-plugin-api": "^1.1 || ^2.0",
+        "composer-plugin-api": "^2.0",
         "php": ">=7.4"
     },
     "require-dev": {
-        "composer/composer": "~1.6 || ~2.0",
+        "composer/composer": "~2.0",
         "cweagans/composer-patches": "^1.6",
         "openeuropa/code-review": "^2.0",
-        "phpunit/phpunit": "^7.5 || ^8 || ^9"
+        "phpunit/phpunit": "^9"
     },
     "autoload": {
         "psr-4": {

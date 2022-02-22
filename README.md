@@ -3,7 +3,9 @@
 [![Packagist](https://img.shields.io/packagist/v/openeuropa/composer-artifacts.svg)](https://packagist.org/packages/openeuropa/composer-artifacts)
 
 Composer plugin that allows to download a specified artifact instead of the default `dist` URL, this allows
-to download all artifact dependencies too. 
+to download all artifact dependencies too.
+
+**Note:** version 2.x of Composer Artifacts only works with Composer 2.x and only supports ZIP artifacts.
 
 **Table of contents:**
 
@@ -31,8 +33,8 @@ Edit the composer.json file and add the following in your `extra` section:
         "artifacts": {
             "foo/bar": {
               "dist": {
-                "url": "https://github.com/{name}/releases/download/{version}/{project-name}-{version}.tar.gz",
-                "type": "tar"
+                "url": "https://github.com/{name}/releases/download/{version}/{project-name}-{version}.zip",
+                "type": "zip"
               }
             }
         }
@@ -43,7 +45,7 @@ Edit the composer.json file and add the following in your `extra` section:
 This will fetch `dist` content from:
 
 ```
-https://github.com/foo/bar/releases/download/0.1.0/bar-0.1.0.tar.gz"
+https://github.com/foo/bar/releases/download/0.1.0/bar-0.1.0.zip"
 ```
 
 Valid `type` values are `tar` and `zip` while available URL replacement tokens are:
