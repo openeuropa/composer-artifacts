@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php" backupGlobals="true" colors="true">
+<phpunit bootstrap="vendor/autoload.php"
+         backupGlobals="true"
+         processIsolation = "true"
+         colors="true">
   <php>
     <ini name="error_reporting" value="32767"/>
     <ini name="memory_limit" value="-1"/>
   </php>
   <testsuites>
-    <testsuite name="composer1">
-      <file>./tests/PluginIntegrationTest.php</file>
-      <directory>./tests/Composer1/</directory>
-    </testsuite>
-    <testsuite name="composer2">
-      <file>./tests/PluginIntegrationTest.php</file>
-      <directory>./tests/Composer2/</directory>
+    <testsuite name="composer-artifacts">
+      <directory>./tests/</directory>
     </testsuite>
   </testsuites>
 </phpunit>

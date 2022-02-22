@@ -16,6 +16,7 @@ services:
   web:
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
     environment:
+      - COMPOSERVER=--2
       - DOCUMENT_ROOT=/test/composer-artifacts
 
 pipeline:
@@ -25,10 +26,7 @@ pipeline:
     volumes:
     - /cache:/cache
     commands:
-    # @todo remove "composer install" step once the following issue is fixed.
-    # @link https://webgate.ec.europa.eu/CITnet/jira/browse/OPENEUROPA-1234
-    - composer install --ansi --no-suggest --no-progress
-    - composer update --prefer-lowest --ansi --no-suggest --no-progress
+    - composer update --prefer-lowest --ansi --no-progress
     when:
       matrix:
         COMPOSER_BOUNDARY: lowest
@@ -40,7 +38,7 @@ pipeline:
     - /cache:/cache
     commands:
     - composer self-update --2
-    - composer install --ansi --no-suggest --no-progress
+    - composer install --ansi --no-progress
     when:
       matrix:
         COMPOSER_BOUNDARY: highest
@@ -55,7 +53,7 @@ pipeline:
     group: test
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
     commands:
-    - ./vendor/bin/phpunit --testsuite composer1
+    - ./vendor/bin/phpunit
     when:
       matrix:
         COMPOSER_BOUNDARY: lowest
@@ -64,14 +62,15 @@ pipeline:
     group: test
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
     commands:
-      - ./vendor/bin/phpunit --testsuite composer2
+      - ./vendor/bin/phpunit
     when:
       matrix:
         COMPOSER_BOUNDARY: highest
 
 matrix:
   PHP_VERSION:
-    - 7.3
+    - 7.4
+    - 8.0
   COMPOSER_BOUNDARY:
     - lowest
     - highest

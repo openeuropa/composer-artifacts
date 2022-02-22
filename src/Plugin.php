@@ -10,18 +10,21 @@ use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Plugin\PluginEvents;
 use Composer\Plugin\PluginInterface;
+use Composer\Plugin\PostFileDownloadEvent;
+use Composer\Plugin\PreFileDownloadEvent;
 use Composer\Repository\PathRepository;
 use Composer\Plugin\PrePoolCreateEvent;
+use Composer\Script\ScriptEvents;
 
 /**
- * Class Plugin
+ * Composer artifacts plugin.
  *
  * @SuppressWarnings(PHPMD.ShortVariable)
  */
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
     /**
-     * Holds the artifacts configuration.
+     * Artifacts configuration.
      *
      * @var string[]
      */
@@ -59,84 +62,23 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
-            // Events for Composer 1.
-            return [
-                PackageEvents::PRE_PACKAGE_INSTALL => 'prePackageInstall',
-                PackageEvents::PRE_PACKAGE_UPDATE => 'prePackageUpdate',
-            ];
-        }
-        // Events for Composer 2.
         return [
-            PluginEvents::PRE_POOL_CREATE => 'prePoolCreate',
+            PluginEvents::PRE_FILE_DOWNLOAD => 'preFileDownload',
         ];
     }
 
     /**
-     * Custom pre-pool-create event callback that update the package properties.
+     * Custom event handler to change configuration for artifacts.
      *
-     * @param \Composer\Plugin\PrePoolCreateEvent $event
+     * @param \Composer\Plugin\PreFileDownloadEvent $event
      *   The event.
      */
-    public function prePoolCreate(PrePoolCreateEvent $event)
+    public function preFileDownload(PreFileDownloadEvent $event)
     {
-        $packages = $event->getPackages();
-        foreach ($packages as $package) {
-            $this->installPackage($package);
-        }
-    }
-
-    /**
-     * Custom pre-package install event callback that update the package
-     * properties upon 'composer install' command.
-     *
-     * @param \Composer\Installer\PackageEvent $event
-     *   The event.
-     */
-    public function prePackageInstall(PackageEvent $event)
-    {
-        /** @var \Composer\DependencyResolver\Operation\InstallOperation $operation */
-        $operation = $event->getOperation();
-
-        $package = $operation->getPackage();
-        $this->installPackage($package);
-    }
-
-    /**
-     * Custom pre-package update event callback that update the package
-     * properties upon 'composer update' command.
-     *
-     * @param \Composer\Installer\PackageEvent $event
-     *   The event.
-     */
-    public function prePackageUpdate(PackageEvent $event)
-    {
-        /** @var \Composer\DependencyResolver\Operation\UpdateOperation $operation */
-        $operation = $event->getOperation();
-
-        $package = $operation->getTargetPackage();
-        $this->installPackage($package, true);
-    }
-
-    /**
-     * Installs package if it is defined in the "artifacts" configuration.
-     *
-     * @param \Composer\Package\PackageInterface $package
-     *   Package to install.
-     * @param bool $update
-     *   Set TRUE if package is updated.
-     */
-    protected function installPackage(PackageInterface $package, bool $update = false)
-    {
-        if (\array_key_exists($package->getName(), $this->getConfig())) {
-            $this->updatePackageConfiguration($package);
-
-            $this->io->write(\sprintf(
-                '  - %s <info>%s</info> with artifact from <info>%s</info>.',
-                $update ? 'Updating' : 'Installing',
-                $package->getName(),
-                $package->getDistUrl()
-            ));
+        $package = $event->getContext();
+        if ($package instanceof PackageInterface && \array_key_exists($package->getName(), $this->getConfig())) {
+            $event->setProcessedUrl($this->getPackageDistUrl($package));
+            $package->setDistType($this->getPackageDistType($package));
         }
     }
 
@@ -151,7 +93,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     private function getPluginTokens(PackageInterface $package)
     {
-        list($vendorName, $projectName) = \explode(
+        [$vendorName, $projectName] = \explode(
             '/',
             $package->getPrettyName(),
             2
@@ -163,6 +105,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
             '{pretty-version}' => $package->getPrettyVersion(),
             '{version}' => $package->getVersion(),
             '{name}' => $package->getName(),
+            '{pretty-name}' => $package->getName(),
             '{stability}' => $package->getStability(),
             '{type}' => $package->getType(),
             '{checksum}' => $package->getDistSha1Checksum(),
@@ -170,33 +113,27 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     }
 
     /**
-     * Custom callback that update a package properties.
-     *
      * @param \Composer\Package\PackageInterface $package
-     *   The package.
+     *
+     * @return string
      */
-    private function updatePackageConfiguration(PackageInterface $package)
+    private function getPackageDistUrl(PackageInterface $package)
     {
-        // Disable downloading from source, to ensure the artifacts will be
-        // used even if composer is invoked with the `--prefer-source` option.
-        $package->setSourceType(null);
-
         $tokens = $this->getPluginTokens($package);
         $package_config = $this->getConfig()[$package->getName()];
+        return strtr($package_config['dist']['url'], $tokens);
+    }
 
-        // The path repository sets some path-related options like "relative"
-        // which are meaningful only in that specific context. When changing
-        // the repository type, these options are carried over as transport options,
-        // which causes errors with downloaders that use remote file systems.
-        // Remove said option when the repository type is changed.
-        if ($package->getRepository() instanceof PathRepository && $package_config['dist']['type'] !== 'path') {
-            $transportOptions = $package->getTransportOptions();
-            unset($transportOptions['relative']);
-            $package->setTransportOptions($transportOptions);
-        }
-
-        $package->setDistUrl(strtr($package_config['dist']['url'], $tokens));
-        $package->setDistType(strtr($package_config['dist']['type'], $tokens));
+    /**
+     * @param \Composer\Package\PackageInterface $package
+     *
+     * @return string
+     */
+    private function getPackageDistType(PackageInterface $package)
+    {
+        $tokens = $this->getPluginTokens($package);
+        $package_config = $this->getConfig()[$package->getName()];
+        return strtr($package_config['dist']['type'], $tokens);
     }
 
     /**

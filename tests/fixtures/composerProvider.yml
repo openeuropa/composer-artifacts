@@ -2,56 +2,16 @@
   composer: |
     {
       "name": "openeuropa/main",
+      "minimum-stability": "stable",
+      "prefer-stable": true,
       "require": {
-        "openeuropa/dependency-1": "1.0.0"
+        "openeuropa/composer-artifacts-test": "~1"
       },
-      "repositories": [
-        {"packagist.org": false},
-        { "type": "path", "url": "../repositories/install/*" },
-        { "type": "path", "url": "../repositories/update/*" }
-      ],
       "extra": {
         "artifacts": {
-          "openeuropa/dependency-1": {
+          "openeuropa/composer-artifacts-test": {
             "dist": {
-              "url": "file:///artifacts/{project-name}-{pretty-version}.tar.gz",
-              "type": "tar"
-            }
-          }
-        }
-      },
-      "config": {
-        "cache-files-ttl": 0
-      }
-    }
-  command: 'install'
-  assert:
-    show:
-    - 'openeuropa/dependency-1 1.0.0'
-    - 'openeuropa/dependency-2 1.0.0'
-    existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.0.0.txt
-    - /main/vendor/openeuropa/dependency-1/composer.json
-    - /main/vendor/openeuropa/dependency-2/composer.json
-    non-existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.1.0.txt
-
--
-  composer: |
-    {
-      "name": "openeuropa/main",
-      "require": {
-        "openeuropa/dependency-1": "^1.0"
-      },
-      "repositories": [
-        {"packagist.org": false},
-        { "type": "path", "url": "../repositories/update/*" }
-      ],
-      "extra": {
-        "artifacts": {
-          "openeuropa/dependency-1": {
-            "dist": {
-              "url": "file:///artifacts/{project-name}-{pretty-version}.zip",
+              "url": "https://github.com/openeuropa/composer-artifacts-test/releases/download/{pretty-version}/{project-name}-{pretty-version}.zip",
               "type": "zip"
             }
           }
@@ -64,35 +24,25 @@
   command: 'install'
   assert:
     show:
-    - 'openeuropa/dependency-1 1.1.0'
-    non-show:
-    - 'openeuropa/dependency-1 1.0.0'
-    - 'openeuropa/dependency-2 1.0.0'
+    - 'openeuropa/composer-artifacts-test 1.0.0'
     existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.1.0.txt
-    - /main/vendor/openeuropa/dependency-1/composer.json
-    non-existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.0.0.txt
-    - /main/vendor/openeuropa/dependency-2/composer.json
-
+    - /main/vendor/openeuropa/composer-artifacts-test/composer.json
+    - /main/vendor/openeuropa/composer-artifacts-test/only-in-artifact-1.0.0.txt
 -
   composer: |
     {
       "name": "openeuropa/main",
+      "minimum-stability": "stable",
+      "prefer-stable": true,
       "require": {
-        "openeuropa/dependency-1": "1.0.0"
+        "openeuropa/composer-artifacts-test": "~1"
       },
-      "repositories": [
-        {"packagist.org": false},
-        { "type": "path", "url": "../repositories/update/*" },
-        { "type": "path", "url": "../repositories/install/*" }
-      ],
       "extra": {
         "artifacts": {
-          "openeuropa/dependency-1": {
+          "openeuropa/composer-artifacts-test": {
             "dist": {
-              "url": "file:///artifacts/{project-name}-{pretty-version}.tar.gz",
-              "type": "tar"
+              "url": "https://github.com/openeuropa/composer-artifacts-test/releases/download/{pretty-version}/{project-name}-{pretty-version}.zip",
+              "type": "zip"
             }
           }
         }
@@ -102,57 +52,15 @@
       }
     }
   command:
-  - 'install'
-  - 'require openeuropa/dependency-1:^1.0'
-  - 'update'
+    - 'install'
+    - 'require openeuropa/composer-artifacts-test:^2.0'
+    - 'update'
   assert:
     show:
-    - 'openeuropa/dependency-1 1.1.0'
-    non-show:
-    - 'openeuropa/dependency-1 1.0.0'
-    - 'openeuropa/dependency-2 1.0.0'
+    - 'openeuropa/composer-artifacts-test 2.0.0'
     existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.1.0.txt
-    - /main/vendor/openeuropa/dependency-1/composer.json
+    - /main/vendor/openeuropa/composer-artifacts-test/composer.json
+    - /main/vendor/openeuropa/composer-artifacts-test/version-2.0.0.txt
+    - /main/vendor/openeuropa/composer-artifacts-test/only-in-artifact-2.0.0.txt
     non-existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.0.0.txt
-
--
-  composer: |
-    {
-      "name": "openeuropa/main",
-      "require": {
-        "openeuropa/dependency-1": "^1.0"
-      },
-      "repositories": [
-        {"packagist.org": false},
-        { "type": "path", "url": "../repositories/update/*" },
-        { "type": "path", "url": "../repositories/install/*" }
-      ],
-      "extra": {
-        "artifacts": {
-          "openeuropa/dependency-1": {
-            "dist": {
-              "url": "file:///artifacts/{project-name}-{pretty-version}.tar.gz",
-              "type": "tar"
-            }
-          }
-        }
-      },
-      "config": {
-        "cache-files-ttl": 0
-      }
-    }
-  command:
-  - 'install'
-  - 'remove openeuropa/dependency-1'
-  assert:
-    non-show:
-    - 'openeuropa/dependency-1 1.0.0'
-    - 'openeuropa/dependency-1 1.1.0'
-    - 'openeuropa/dependency-2 1.0.0'
-    non-existing:
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.0.0.txt
-    - /main/vendor/openeuropa/dependency-1/artifact-version-1.1.0.txt
-    - /main/vendor/openeuropa/dependency-1/composer.json
-    - /main/vendor/openeuropa/dependency-2/composer.json
+    - /main/vendor/openeuropa/composer-artifacts-test/only-in-artifact-1.0.0.txt
