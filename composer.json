@@ -8,7 +8,7 @@
     "prefer-stable": true,
     "require": {
         "composer-plugin-api": "^2.0",
-        "php": ">=7.4"
+        "php": ">=8.0"
     },
     "require-dev": {
         "composer/composer": "~2.0",
