@@ -1,7 +1,7 @@
 version: '2'
 services:
   web:
-    image: registry.fpfis.eu/fpfis/httpd-php:8.0-ci
+    image: registry.fpfis.eu/fpfis/httpd-php:8.1-ci
     working_dir: /var/www/html
     ports:
       - 8080:8080

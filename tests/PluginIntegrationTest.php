@@ -87,7 +87,7 @@ class PluginIntegrationTest extends TestCase
         }
         foreach ($assert['non-existing'] as $file) {
             if (version_compare(Version::id(), '9.5', 'lt')) {
-                $this->assertFileNotExists($this->path($file));
+                $this->assertFileDoesNotExist($this->path($file));
             } else {
                 $this->assertFileDoesNotExist($this->path($file));
             }

@@ -8,12 +8,13 @@
     "prefer-stable": true,
     "require": {
         "composer-plugin-api": "^2.0",
-        "php": ">=7.4"
+        "php": ">=8.0"
     },
     "require-dev": {
         "composer/composer": "~2.0",
-        "openeuropa/code-review": "^2.0",
-        "phpunit/phpunit": "^9"
+        "openeuropa/code-review": "2.x-dev",
+        "phpunit/phpunit": "^9",
+        "symfony/console": "^4.4.30"
     },
     "autoload": {
         "psr-4": {
@@ -29,7 +30,10 @@
         "class": "OpenEuropa\\ComposerArtifacts\\Plugin",
         "enable-patching": true,
         "composer-exit-on-patch-failure": true,
-        "plugin-modifies-downloads": true
+        "plugin-modifies-downloads": true,
+        "_readme": [
+            "Explicit minimum version requirement of symfony/console due to lower versions passing null parameter to preg_match() being incompatible with PHP 8.1."
+        ]
     },
     "config": {
         "sort-packages": true,
