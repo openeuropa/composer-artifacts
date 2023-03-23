@@ -1,0 +1,26 @@
+{
+    "name": "openeuropa/main",
+    "require": {
+        "openeuropa/dependency-m": "dev-master"
+    },
+    "repositories": [
+        {"packagist.org": false},
+        { "type": "path", "url": "../repositories/update/*" },
+        { "type": "path", "url": "../repositories/install/*" }
+    ],
+    "extra": {
+        "artifacts": {
+            "openeuropa/dependency-m": {
+		"provider": "gitlab",
+		"gitlab_host": "file:///artifacts/gitlab",
+		"events": [
+		    "post-package-install"
+		],
+		"job": "bundle:app"
+            }
+        }
+    },
+    "config": {
+        "cache-files-ttl": 0
+    }
+}

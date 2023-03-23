@@ -182,6 +182,13 @@ class Plugin implements ComposerArtifactPluginInterface
             $config['provider'],
         ];
 
+        if (getenv('PHPUNIT_TEST') == 1) {
+            array_unshift(
+                $candidates,
+                'OpenEuropa\\ComposerArtifacts\\Tests\\' . \ucfirst($config['provider']) . 'Mock'
+            );
+        }
+
         foreach ($candidates as $provider) {
             if (!class_exists($provider)) {
                 continue;
