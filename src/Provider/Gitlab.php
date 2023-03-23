@@ -76,20 +76,22 @@ class Gitlab extends AbstractProvider
 
         if (isset($config['in'])) {
             if (! array_intersect($config['events'], self::POST_PACKAGE_EVENTS)) {
-                throw new \Exception("Custom destination directory only makes sense when extracting artifact on-top of the package rather than replacing it.");
+                throw new \Exception("Custom destination directory only makes sense"
+                                     . " when extracting artifact on-top of the package rather than replacing it.");
             }
         }
 
         $project_api_url = $this->getProjectApiUrl();
 
         $all_builds = $this->getBuilds($project_api_url . '/' . static::BUILD_URL_SUFFIX);
-        $build = self::filterBuils($all_builds, $stage, $job, $ref, $tag);
+        $build = self::filterBuilds($all_builds, $stage, $job, $ref, $tag);
 
         // Gitlab API URL to download artifact for a given build
         $project_artifacts_url = $project_api_url . '/jobs/' . $build['id'] . '/artifacts';
 
         $this->getPlugin()->getIo()->write(sprintf(
-            "<info>Latest build [%s]\n- ref: %s\n- stage: %s\n- name: %s\n- at: %s\n- runner: %d -> %s\n- triggered by: %s</info>",
+            "<info>Latest build [%s]\n- ref: %s\n- stage: %s\n- name: %s\n- at: %s\n"
+            . "- runner: %d -> %s\n- triggered by: %s</info>",
             $build['id'],
             $build['ref'],
             $build['stage'],
@@ -135,7 +137,7 @@ class Gitlab extends AbstractProvider
 
         $dm = $this->getEvent()->getComposer()->getDownloadManager();
         $path = $this->getAbsoluteInstallPath($in);
-        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0.99') >= 0) {
+        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0.0') >= 0) {
             $this->builtInDownload($dm, $project_artifacts_url, $path);
         } else {
             $this->customDownload($dm, $project_artifacts_url, $path);
@@ -165,10 +167,10 @@ class Gitlab extends AbstractProvider
         );
 
         if (null === ($results = json_decode($raw, true))) {
-            throw new \Exception("Unreadable Gitlab API response.");
+            throw new \Exception('Unreadable Gitlab API response.');
         }
         if (!$results) {
-            throw new \Exception('No successful build found for the project.');
+            throw new \Exception("No build found for the project at $url.");
         }
 
         return $results;
@@ -178,7 +180,7 @@ class Gitlab extends AbstractProvider
      * Filter builds listing and extracts successful ones matching
      * a set of criterias.
      */
-    private static function filterBuils($results, $stage, $name, $ref, $tag)
+    private static function filterBuilds($results, $stage, $name, $ref, $tag)
     {
         foreach ($results as $item) {
             if ($item['status'] === 'success'
@@ -189,7 +191,8 @@ class Gitlab extends AbstractProvider
                 return $item;
             }
         }
-        throw new \Exception('No successful build found for the project.');
+        $debug = json_encode(array_filter(compact("stage", "name", "ref", "tag")));
+        throw new \Exception("No successful build found for project: $debug.");
     }
 
     /**
@@ -220,7 +223,7 @@ class Gitlab extends AbstractProvider
     /**
      * A mean to call our custom downloader.
      */
-    private function customDownload(DownloadManager $dm, $url, $path)
+    protected function customDownload(DownloadManager $dm, $url, $path)
     {
         $downloader = new EnhancedZipDownloader($this->getPlugin()->getIo(), $this->getEvent()->getComposer()->getConfig());
         $p = $this->getPackage();

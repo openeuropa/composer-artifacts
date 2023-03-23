@@ -33,7 +33,7 @@ class EnhancedZipDownloader extends ZipDownloader
 {
     public function download(PackageInterface $package, $path, $output = true)
     {
-        $temporaryDir = $this->config->get('vendor-dir').'/composer/'.substr(md5(uniqid('', true)), 0, 8);
+        $temporaryDir = $this->config->get('vendor-dir') . '/composer/' . substr(md5(uniqid('', true)), 0, 8);
         if (! is_dir($temporaryDir)) {
             mkdir($temporaryDir, 0700);
         }
@@ -43,7 +43,15 @@ class EnhancedZipDownloader extends ZipDownloader
         $tmpfile = $temporaryDir . '/artifact-' . $buildId . '.zip';
 
         $fileName = $this->doDownload($package, $tmpfile, $artifactsUrl);
-        $this->io->debug(sprintf('Downloaded artifacts tarball at %s (%d bytes) and going to extract to %s', $tmpfile, filesize($tmpfile), $path));
+
+        $this->io->debug(
+            sprintf(
+                'Downloaded artifacts tarball from %s. Extracted to %s (%d bytes)',
+                $artifactsUrl,
+                $tmpfile,
+                filesize($tmpfile)
+            )
+        );
 
         $this->extract($tmpfile, $path);
         $this->io->debug('Artifacts extracted');
