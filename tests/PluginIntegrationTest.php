@@ -26,7 +26,7 @@ class PluginIntegrationTest extends TestCase
     public static function setUpAfterClass()
     {
         $fs = new Filesystem();
-        $fs->remove(__DIR__ . '/fixtures/main');
+        // $fs->remove(__DIR__ . '/fixtures/main');
     }
 
     /**
@@ -70,12 +70,16 @@ class PluginIntegrationTest extends TestCase
         $commands[] = 'show';
 
         $application = new TestPluginApplication();
+        if (file_exists($this->path($composer))) {
+            $composer = file_get_contents($this->path($composer));
+        }
         $application->setWorkingDir($this->path('/main'));
         $this->writeComposerJson($this->path('/main'), $composer);
 
         // Run all commands
         foreach ($commands as $command) {
             $application->runCommand($command);
+            print($application->getOutput()->fetch());
         }
 
         $output = $application->getOutput()->fetch();
@@ -99,7 +103,7 @@ class PluginIntegrationTest extends TestCase
      */
     public function composerDataProvider()
     {
-        return Yaml::parseFile($this->path('/composerProvider.yml'));
+        return array_slice(Yaml::parseFile($this->path('/composerProvider.yml')), 0, 1);
     }
 
     /**

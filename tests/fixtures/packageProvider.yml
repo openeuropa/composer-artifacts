@@ -1,6 +1,21 @@
 -
   input:
     name: test/test
+    version: dev-master
+    prettyVersion: dev-master
+    extra:
+      artifacts:
+       "test/test":
+         provider: gitlab
+         job: bundle:app
+         gitlab_host: "file:///artifacts/gitlab"
+  output:
+    getDistUrl: "artifacts/gitlab/api/v4/projects/test%2Ftest/jobs/150717030/artifacts"
+    getDistType: "zip"
+
+-
+  input:
+    name: test/test
     version: 1.0.0
     prettyVersion: 1.0.0
     extra:
